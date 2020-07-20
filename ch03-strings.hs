@@ -7,7 +7,7 @@ module Strings where
 addExclamationMark x = concat [x, "!"]
 
 -- b) Given "Curry is awesome" returns "y"
-returnY x = (!!) x 5
+returnY x = (!!) x 4
 
 -- c) Given "Curry is awesome" returns "awesome"
 returnAwesome x = drop 9 x
@@ -17,6 +17,6 @@ thirdLetter :: [Char] -> Char
 thirdLetter x = (!!) x 2
 
 -- 4. letterIndex
-curryIsAwesome !! x
+curryIsAwesome = "Curry is awesome"
 letterIndex :: Int -> Char
 letterIndex x = curryIsAwesome !! x
