@@ -32,6 +32,33 @@ reverse' :: [a] -> [a]
 reverse' [] = []
 reverse' (x:xs) = reverse' xs ++ [x]
 
+-- Zip
+-- i: zip' [1, 2, 3] [2, 1]
+-- o: [(1, 2), (3, 4)]
+zip' :: [a] -> [b] -> [(a,b)]
+zip' _ [] = []
+zip' [] _ = []
+zip'(x:xs) (y:ys) = (x,y):zip' xs ys
+
+-- Elem: Check if the element exist in the list
+-- i: elem' 2 [2, 1]
+-- o: True
+elem' :: (Eq a) => a -> [a] -> Bool
+elem' a [] = False
+elem' a (x:xs)
+    | a == x = True
+    | otherwise = a `elem'` xs
+
+-- Quicksort
+-- i: quicksort' [2, 1, 6, 7, 3, 6, 5, 3]
+-- o: [1, 2, 3, 3, 5, 6, 6, 7]
+quicksort :: (Ord a) => [a] -> [a]
+quicksort [] = []
+quicksort (x:xs) =
+  let smallerSorted = quicksort [a | a <- xs, a <= x]
+      biggerSorted = quicksort [a | a <- xs, a > x]
+  in smallerSorted ++ [x] ++ biggerSorted
+
 -- Digit to word
 digitToWord :: Int -> String
 digitToWord n
