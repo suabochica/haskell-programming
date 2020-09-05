@@ -14,3 +14,14 @@ GHCi, version 8.8.3: https://www.haskell.org/ghc/  :? for help
 Loaded GHCi configuration from /private/var/folders/lg/7rc80k8s24v5jzmpctb7gm_40000gp/T/haskell-stack-ghci/2a3bbd58/ghci-script
 Prelude> 
 ```
+
+To quit from `Prelude`, just type the next command
+
+```
+Prelude> :quit
+```
+or,
+
+```
+Prelude> :q
+```
