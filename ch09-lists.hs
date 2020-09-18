@@ -45,29 +45,29 @@ decipherMessage str = map (caesarDecipher 3) str
 
  -- Standard functions
  -- 1. MyAnd
-MyAnd :: [Bool] -> Bool
-MyAnd [] = False
-MyAnd (x:xs) = x && MyAnd xs
+myAnd :: [Bool] -> Bool
+myAnd [] = False
+myAnd (x:xs) = x && myAnd xs
 
 -- 2. MyOr
-MyOr :: [Bool] -> Bool
-MyOr [] = False
-MyOr (x:xs) = x || MyOr xs
+myOr :: [Bool] -> Bool
+myOr [] = False
+myOr (x:xs) = x || myOr xs
 
 -- 3. MyAny
-MyAny :: (a -> Bool) -> [a] -> Bool
-MyAny f [] = False
-MyAny f (x:xs) = f x || MyAny f xs
+myAny :: (a -> Bool) -> [a] -> Bool
+myAny f [] = False
+myAny f (x:xs) = f x || myAny f xs
 
 -- 4. MyElem
-MyElem :: Eq a => a -> [a] -> Bool
-MyElem _ [] = False
-MyElem x (y:ys) = x == y || MyElem x ys
+myElem :: Eq a => a -> [a] -> Bool
+myElem _ [] = False
+myElem x (y:ys) = x == y || myElem x ys
 
 -- 5. MyReverse
-MyReverse :: [a] -> [a]
-MyReverse [] = []
-MyReverse (x:xs) = (myReverse xs) ++ [x]
+myReverse :: [a] -> [a]
+myReverse [] = []
+myReverse (x:xs) = (myReverse xs) ++ [x]
 
 -- 6. squish: flatMap
 squish :: [[a]] -> [a]
