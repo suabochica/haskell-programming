@@ -1,0 +1,51 @@
+#+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/3.0.0/
+#+OPTIONS: toc:nil num:nil timestamp:nil
+#+OPTIONS: reveal_width:1200 reveal_height:800 reveal_progress:t
+#+REVEAL_TRANS: zoom
+#+REVEAL_THEME: night
+#+REVEAL_INIT_OPTIONS: slideNumber:true
+
+#+TITLE: Signaling Adversity
+#+DESCRIPTION: Thank goodness we don't have only serius problems, but ridiculous ones as well
+#+AUTHOR: Sergio Benítez
+
+* Outline
+The chapter will include:
+- ~Nothing~, or ~Just Maybe~
+- ~Either~ left or right, but not both
+- higher-kindedness
+- anamorphisms, but not animorphs
+
+* Signaling adversity
+
+* Love ~Nothing~
+  
+* Bleating ~Either~ 
+
+* Kinds, a thousand stars in your types
+
+* Definitions
+1. A higher kinded type is any type whose kind has a function arrow in it and which can be described
+as a type constructor rather than a type constant:
+
+Example of higher kind:
+
+#+begin_src haskell
+Maybe  :: * -> *
+[]     :: * -> *
+Either :: * -> * -> *
+[->]     :: * -> * -> *
+#+end_src
+
+Example of not higher kind:
+
+#+begin_src haskell
+Int    :: *
+Char   :: *
+String :: *
+[Char] :: *
+#+end_src
+
+#+begin_quote
+Note: This is not to be confused with higher kinded /polymorphism/
+#+end_quote
