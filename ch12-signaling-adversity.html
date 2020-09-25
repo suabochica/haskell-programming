@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Signaling Adversity</title>
+<meta name="author" content="Sergio Benítez"/>
+<meta name="description" content="Thank goodness we don't have only serius problems, but ridiculous ones as well"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="http://cdn.jsdelivr.net/reveal.js/3.0.0/css/reveal.css"/>
+
+<link rel="stylesheet" href="http://cdn.jsdelivr.net/reveal.js/3.0.0/css/theme/night.css" id="theme"/>
+
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'http://cdn.jsdelivr.net/reveal.js/3.0.0/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide">
+<h1 class="title">Signaling Adversity</h1><h2 class="author">Sergio Benítez</h2>
+</section>
+
+<section>
+<section id="slide-org791fc12">
+<h2 id="org791fc12">Outline</h2>
+<p>
+The chapter will include:
+</p>
+<ul>
+<li><code>Nothing</code>, or <code>Just Maybe</code></li>
+<li><code>Either</code> left or right, but not both</li>
+<li>higher-kindedness</li>
+<li>anamorphisms, but not animorphs</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org4432979">
+<h2 id="org4432979">Signaling adversity</h2>
+<p>
+Sometimes it is not convenient for every value in a datatype to make sense for your programs.
+When that happens in Haskell the <code>Maybe</code> and <code>Either</code> datatypes come to rescue.
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-orgeb4898a">
+<h2 id="orgeb4898a">Love <code>Nothing</code></h2>
+<p>
+Let's consider the definition of <code>Maybe</code>:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-haskell"><span style="color: #99cc99;">data</span> <span style="color: #6699cc;">Maybe</span> a <span style="color: #ffcc66;">=</span> <span style="color: #6699cc;">Nothing</span> <span style="color: #ffcc66;">|</span> <span style="color: #6699cc;">Just</span> a
+</pre>
+</div>
+
+<p>
+<code>Maybe</code> is a very common datatype in Haskell 😅
+</p>
+
+<aside class="notes">
+<p>
+Maybe lets us return a default Nothing value when we don't have any sensible values to return for our intended type a
+</p>
+
+</aside>
+
+</section>
+<section id="slide-org3ef0b5c">
+<h3 id="org3ef0b5c">Example</h3>
+<div class="org-src-container">
+
+<pre class="src src-haskell"><span style="color: #f99157;">ifEvenAdd2</span> <span style="color: #ffcc66;">::</span> <span style="color: #6699cc;">Integer</span> <span style="color: #ffcc66;">-&gt;</span> <span style="color: #6699cc;">Integer</span>
+<span style="color: #f99157;">ifEvenAdd2</span> n <span style="color: #ffcc66;">=</span> <span style="color: #99cc99;">if</span> even n <span style="color: #99cc99;">then</span> n <span style="color: #ffcc66;">+</span> <span style="color: #6699cc;">2</span> <span style="color: #99cc99;">else</span> <span style="color: #ffcc66;">&#129300;?</span>
+</pre>
+</div>
+
+</section>
+<section id="slide-org4cb517b">
+<h3 id="org4cb517b">Maybe to rescue</h3>
+<div class="org-src-container">
+
+<pre class="src src-haskell"><span style="color: #f99157;">ifEvenAdd2</span> <span style="color: #ffcc66;">::</span> <span style="color: #6699cc;">Integer</span> <span style="color: #ffcc66;">-&gt;</span> <span style="color: #6699cc;">Maybe</span> <span style="color: #6699cc;">Integer</span>
+<span style="color: #f99157;">ifEvenAdd2</span> n <span style="color: #ffcc66;">=</span> <span style="color: #99cc99;">if</span> even n <span style="color: #99cc99;">then</span> n <span style="color: #ffcc66;">+</span> <span style="color: #6699cc;">2</span> <span style="color: #99cc99;">else</span> <span style="color: #6699cc;">Nothing</span>
+</pre>
+</div>
+
+<p>
+Is an improvement, but still we have some problems
+</p>
+
+</section>
+<section id="slide-org1f7241f">
+<h3 id="org1f7241f">Final version</h3>
+<div class="org-src-container">
+
+<pre class="src src-haskell"><span style="color: #f99157;">ifEvenAdd2</span> <span style="color: #ffcc66;">::</span> <span style="color: #6699cc;">Integer</span> <span style="color: #ffcc66;">-&gt;</span> <span style="color: #6699cc;">Maybe</span> <span style="color: #6699cc;">Integer</span>
+<span style="color: #f99157;">ifEvenAdd2</span> n <span style="color: #ffcc66;">=</span> <span style="color: #99cc99;">if</span> even n <span style="color: #99cc99;">then</span> <span style="color: #6699cc;">Just</span> <span style="color: #cccccc;">(</span>n <span style="color: #ffcc66;">+</span> <span style="color: #6699cc;">2</span><span style="color: #cccccc;">)</span> <span style="color: #99cc99;">else</span> <span style="color: #6699cc;">Nothing</span>
+</pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org2547156">
+<h2 id="org2547156">Bleating <code>Either</code></h2>
+
+</section>
+</section>
+<section>
+<section id="slide-org8ecac8d">
+<h2 id="org8ecac8d">Kinds, a thousand stars in your types</h2>
+
+</section>
+</section>
+<section>
+<section id="slide-orgce432a9">
+<h2 id="orgce432a9">Definitions</h2>
+<ol>
+<li>A higher kinded type is any type whose kind has a function arrow in it and which can be described</li>
+
+</ol>
+<p>
+as a type constructor rather than a type constant:
+</p>
+
+<p>
+Example of higher kind:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-haskell"><span style="color: #6699cc;">Maybe</span>  <span style="color: #ffcc66;">::</span> <span style="color: #ffcc66;">*</span> <span style="color: #ffcc66;">-&gt;</span> <span style="color: #ffcc66;">*</span>
+<span style="color: #cccccc;">[]</span>     <span style="color: #ffcc66;">::</span> <span style="color: #ffcc66;">*</span> <span style="color: #ffcc66;">-&gt;</span> <span style="color: #ffcc66;">*</span>
+<span style="color: #6699cc;">Either</span> <span style="color: #ffcc66;">::</span> <span style="color: #ffcc66;">*</span> <span style="color: #ffcc66;">-&gt;</span> <span style="color: #ffcc66;">*</span> <span style="color: #ffcc66;">-&gt;</span> <span style="color: #ffcc66;">*</span>
+<span style="color: #cccccc;">[</span><span style="color: #ffcc66;">-&gt;</span><span style="color: #cccccc;">]</span>     <span style="color: #ffcc66;">::</span> <span style="color: #ffcc66;">*</span> <span style="color: #ffcc66;">-&gt;</span> <span style="color: #ffcc66;">*</span> <span style="color: #ffcc66;">-&gt;</span> <span style="color: #ffcc66;">*</span>
+</pre>
+</div>
+
+<p>
+Example of not higher kind:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-haskell"><span style="color: #6699cc;">Int</span>    <span style="color: #ffcc66;">::</span> <span style="color: #ffcc66;">*</span>
+<span style="color: #6699cc;">Char</span>   <span style="color: #ffcc66;">::</span> <span style="color: #ffcc66;">*</span>
+<span style="color: #6699cc;">String</span> <span style="color: #ffcc66;">::</span> <span style="color: #ffcc66;">*</span>
+<span style="color: #cccccc;">[</span><span style="color: #6699cc;">Char</span><span style="color: #cccccc;">]</span> <span style="color: #ffcc66;">::</span> <span style="color: #ffcc66;">*</span>
+</pre>
+</div>
+
+<blockquote>
+<p>
+Note: This is not to be confused with higher kinded <i>polymorphism</i>
+</p>
+</blockquote>
+</section>
+</section>
+</div>
+</div>
+<script src="http://cdn.jsdelivr.net/reveal.js/3.0.0/lib/js/head.min.js"></script>
+<script src="http://cdn.jsdelivr.net/reveal.js/3.0.0/js/reveal.js"></script>
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: false,
+center: true,
+slideNumber: 'c',
+rollingLinks: false,
+keyboard: true,
+mouseWheel: false,
+fragmentInURL: false,
+hashOneBasedIndex: false,
+pdfSeparateFragments: true,
+
+overview: true,
+width: 1200,
+height: 800,
+
+theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+transition: Reveal.getQueryHash().transition || 'zoom', // see README of reveal.js for options
+transitionSpeed: 'default',
+
+// Optional libraries used to extend reveal.js
+dependencies: [
+ { src: 'http://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: 'http://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: 'http://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+ { src: 'http://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } },
+ { src: 'http://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } }]
+
+});
+</script>
+</body>
+</html>

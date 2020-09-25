@@ -1,6 +1,6 @@
 #+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/3.0.0/
 #+OPTIONS: toc:nil num:nil timestamp:nil
-#+OPTIONS: reveal_width:1200 reveal_height:800 reveal_progress:t
+#+OPTIONS: reveal_width:1200 reveal_height:800 reveal_progress:t reveal_center:t
 #+REVEAL_TRANS: zoom
 #+REVEAL_THEME: night
 #+REVEAL_INIT_OPTIONS: slideNumber:true
@@ -17,9 +17,46 @@ The chapter will include:
 - anamorphisms, but not animorphs
 
 * Signaling adversity
+Sometimes it is not convenient for every value in a datatype to make sense for your programs.
+When that happens in Haskell the ~Maybe~ and ~Either~ datatypes come to rescue.
 
 * Love ~Nothing~
   
+Let's consider the definition of ~Maybe~:
+
+#+begin_src haskell
+data Maybe a = Nothing | Just a
+#+end_src
+
+~Maybe~ is a very common datatype in Haskell 😅
+
+#+begin_notes
+Maybe lets us return a default Nothing value when we don't have any sensible values to return for our intended type a
+#+end_notes
+
+** Example
+   
+#+begin_src haskell
+ifEvenAdd2 :: Integer -> Integer
+ifEvenAdd2 n = if even n then n + 2 else 🤔?
+#+end_src
+
+** Maybe to rescue
+   
+#+begin_src haskell
+ifEvenAdd2 :: Integer -> Maybe Integer
+ifEvenAdd2 n = if even n then n + 2 else Nothing
+#+end_src
+
+Is an improvement, but still we have some problems
+
+** Final version
+   
+#+begin_src haskell
+ifEvenAdd2 :: Integer -> Maybe Integer
+ifEvenAdd2 n = if even n then Just (n + 2) else Nothing
+#+end_src
+
 * Bleating ~Either~ 
 
 * Kinds, a thousand stars in your types
