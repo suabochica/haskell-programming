@@ -35,3 +35,46 @@
 -- data Goats = Int deriving (Eq, Show)
 -- i.e Unary constructors are the identity function for cardinality
 -- newtype keyword is used to define types with a single unary data constructor
+
+-- Records
+-- -----------
+-- Records make it easy to define record file accesors
+dataPlace = House {price :: Int, address :: String, area :: Float}
+
+-- Accidental bottoms from records
+-- Error when you try to access to the price field of a Castle
+dataPlace = House {price :: Int, address :: String, area :: Float}
+          | Caste {area :: Int}
+
+-- Valid definition
+dataPlace = House {area :: Int}
+          | Caste {area :: Int}
+
+-- Normal Form
+-- -----------
+-- The normal form means representing a type as a sum of products.
+
+a * (b + c) = (a*b) + (a * c)
+
+data BookType = FictionBook | NonFictionBook
+type AuthorName = String
+
+-- === a * (a + c)
+data Author = Author AuthorName BookType
+
+-- === (a + b) + (a * c)
+data Author = Fiction AuthorName | NonFiction AuthorName
+
+-- Constructing and decosntructing values
+-- -----------
+-- Constructor: produce a value
+-- Deconstructor: consume a value, Pattern matching consume the value
+-- Not recommendable, build records in partial form
+
+data FarmerRec =
+  FarmerRec {name :: Name, acres :: Acres, farmerType :: FarmerType} deriving Show
+
+isDairyFarmerRec :: FarmerRec -> Bool
+isDairyFarmerRec farmer = case farmerType farmer of
+  DairyFarmer -> Trye
+  _ -> False
