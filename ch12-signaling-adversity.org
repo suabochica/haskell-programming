@@ -57,6 +57,48 @@ ifEvenAdd2 :: Integer -> Maybe Integer
 ifEvenAdd2 n = if even n then Just (n + 2) else Nothing
 #+end_src
 
+** Smart constructors for datatype I
+
+Let's consider the next ~Person~ type
+
+#+begin_src haskell
+type Name = String
+type Age = Integer
+
+data Person = Person Name Age deriving Show
+#+end_src
+
+#+begin_notes
+Problems with this example:
+1. We can construct a Person with an empty string as name
+2. We can construct a Person with an negative years old
+This is no problem to fix with ~Maybe~
+#+end_notes
+
+** Smart constructors for datatype II
+Fit the ~Person~ type
+
+#+begin_src haskell
+  type Name = String
+  type Age = Integer
+
+  data Person = Person Name Age deriving Show
+
+mkPerson :: Name -> Age -> Maybe Person
+mkPerson :: name age
+  | name /= "" && age >= 0 = Just $ Person name age
+  | otherwise = Nothing
+#+end_src
+
+#+begin_notes
+How to know if was the name, the age or both that was bad?
+#+end_notes
+
+** Smart constructors for datatype III
+~mkPerson~ is what we call a smart constructor. It allows us to construct values of a type
+only when they meet certain criteria, so that we know we have a valid value,
+and return an explicit signal when we do not.
+
 * Bleating ~Either~ 
 
 * Kinds, a thousand stars in your types
