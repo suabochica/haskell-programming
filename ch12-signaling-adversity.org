@@ -4,6 +4,7 @@
 #+REVEAL_TRANS: zoom
 #+REVEAL_THEME: night
 #+REVEAL_INIT_OPTIONS: slideNumber:true
+#+REVEAL_PLUGINS: (highlight)
 
 #+TITLE: Signaling Adversity
 #+DESCRIPTION: Thank goodness we don't have only serius problems, but ridiculous ones as well
@@ -78,17 +79,20 @@ This is no problem to fix with ~Maybe~
 ** Smart constructors for datatype II
 Fit the ~Person~ type
 
+:PROPERTIES:
+#+ATTR_REVEAL: :code_attribs data-line-numbers='1-3'
 #+begin_src haskell
-  type Name = String
-  type Age = Integer
+type Name = String
+type Age = Integer
 
-  data Person = Person Name Age deriving Show
+data Person = Person Name Age deriving Show
 
 mkPerson :: Name -> Age -> Maybe Person
 mkPerson :: name age
   | name /= "" && age >= 0 = Just $ Person name age
   | otherwise = Nothing
 #+end_src
+:END:
 
 #+begin_notes
 How to know if was the name, the age or both that was bad?
@@ -101,6 +105,110 @@ and return an explicit signal when we do not.
 
 * Bleating ~Either~ 
 
+Let's check the ~Either~ datatype
+
+#+begin_src haskell
+data Either a b = Left a | Right b
+#+end_src
+
+** Remember the goal
+   
+What we want is a way to know /why/ our inputs were incorrect /if/ they were incorrect
+
+** Initial proposal I
+
+Define and ~PersonInvalid~ data constructor,
+#+begin_src haskell
+data PersonInvalid = NameEmpty 
+                   | AgeTooLow
+                   deriving (Eq, Show)
+#+end_src
+
+#+begin_notes
+~Eq~ because otherwise we cannot equality check the constructors
+#+end_notes
+
+and use it in the definition of the ~mkPerson~ data type:
+
+#+begin_src haskell
+mkPerson :: Name -> Age -> Either PersonInvalid Person
+#+end_src
+
+** Initial proposal II
+
+#+begin_src haskell
+type Name = String
+type Age = Integer
+
+data Person = Person Name Age deriving Show
+data PersonInvalid = NameEmpty
+                   | AgeTooLow
+                   deriving (Eq, Show)
+
+mkPerson :: Name
+          -> Age
+          -> Either PersonInvalid Person
+
+makePerson name age
+| name /= "" && age >= 0 = Right $ Person name age
+| name = ¨ = Left NameEmpty
+| otherwise = Left AgeTooLow
+#+end_src
+
+** The ~Left~ and ~Right~ Convention
+   
+We use ~Left~ as our invalid or error constructor for a couple of
+reasons. It is conventional to do so in Haskell, but that convention
+came about for a reason. The reason has to do with the ordering of
+type arguments and application of functions.
+
+#+begin_quote
+~Functor~ spoiler
+#+end_quote
+
+** Another problem
+We can't identify when both inputs are incorrect
+
+** The final version
+#+begin_src haskell
+type Name = String
+type Age = Integer
+type ValidatePerson a = Either [PersonInvalid] a
+
+data Person = Person Name Age deriving Show
+data PersonInvalid = NameEmpty
+                   | AgeTooLow
+                   deriving (Eq, Show)
+
+ageOkay :: Age -> Either [PersonInvalid] Age
+ageOkay age = case age >= 0 of
+  True -> Right age
+  False -> Left [AgeTooLow]
+
+nameOkay :: Name -> Either [PersonInvalid] Name
+nameOkay name = case name /= "" of
+  True -> Right name
+  False -> Left [NameEmpty]
+
+mkPerson :: Name
+         -> Age
+         -> Either ValidatePerson Person
+
+makePerson name age =
+  mkPerson' (nameOkay name) (ageOkay age)
+
+mkPerson' :: ValidatePerson Name
+          -> ValidatePerson Age
+          -> ValidatePerson Person
+  
+mkPerson' (Right nameOk) (Right ageOk) =
+  Right (Person nameOk ageOk)
+mkPerson' (Left badName) (Left badAge) =
+  Left (Person badName ++ badAge)
+mkPerson' (Left badName) _ = Left badName
+mkPerson' (Left badAge) _ = Left badAge
+#+end_src
+   
 * Kinds, a thousand stars in your types
 
 * Definitions

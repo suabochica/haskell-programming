@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="http://cdn.jsdelivr.net/reveal.js/3.0.0/css/reveal.css"/>
 
 <link rel="stylesheet" href="http://cdn.jsdelivr.net/reveal.js/3.0.0/css/theme/night.css" id="theme"/>
+<link rel="stylesheet" href="http://cdn.jsdelivr.net/reveal.js/3.0.0/lib/css/zenburn.css"/>
 
 <!-- If the query includes 'print-pdf', include the PDF print sheet -->
 <script>
@@ -31,8 +32,8 @@
 </section>
 
 <section>
-<section id="slide-org791fc12">
-<h2 id="org791fc12">Outline</h2>
+<section id="slide-org543ed00">
+<h2 id="org543ed00">Outline</h2>
 <p>
 The chapter will include:
 </p>
@@ -47,8 +48,8 @@ The chapter will include:
 </section>
 </section>
 <section>
-<section id="slide-org4432979">
-<h2 id="org4432979">Signaling adversity</h2>
+<section id="slide-orgcc87679">
+<h2 id="orgcc87679">Signaling adversity</h2>
 <p>
 Sometimes it is not convenient for every value in a datatype to make sense for your programs.
 When that happens in Haskell the <code>Maybe</code> and <code>Either</code> datatypes come to rescue.
@@ -57,16 +58,16 @@ When that happens in Haskell the <code>Maybe</code> and <code>Either</code> data
 </section>
 </section>
 <section>
-<section id="slide-orgeb4898a">
-<h2 id="orgeb4898a">Love <code>Nothing</code></h2>
+<section id="slide-orgcaead70">
+<h2 id="orgcaead70">Love <code>Nothing</code></h2>
 <p>
 Let's consider the definition of <code>Maybe</code>:
 </p>
 
 <div class="org-src-container">
 
-<pre class="src src-haskell"><span style="color: #99cc99;">data</span> <span style="color: #6699cc;">Maybe</span> a <span style="color: #ffcc66;">=</span> <span style="color: #6699cc;">Nothing</span> <span style="color: #ffcc66;">|</span> <span style="color: #6699cc;">Just</span> a
-</pre>
+<pre><code class=" haskell" >data Maybe a = Nothing | Just a
+</code></pre>
 </div>
 
 <p>
@@ -81,23 +82,23 @@ Maybe lets us return a default Nothing value when we don't have any sensible val
 </aside>
 
 </section>
-<section id="slide-org3ef0b5c">
-<h3 id="org3ef0b5c">Example</h3>
+<section id="slide-orgbd4f335">
+<h3 id="orgbd4f335">Example</h3>
 <div class="org-src-container">
 
-<pre class="src src-haskell"><span style="color: #f99157;">ifEvenAdd2</span> <span style="color: #ffcc66;">::</span> <span style="color: #6699cc;">Integer</span> <span style="color: #ffcc66;">-&gt;</span> <span style="color: #6699cc;">Integer</span>
-<span style="color: #f99157;">ifEvenAdd2</span> n <span style="color: #ffcc66;">=</span> <span style="color: #99cc99;">if</span> even n <span style="color: #99cc99;">then</span> n <span style="color: #ffcc66;">+</span> <span style="color: #6699cc;">2</span> <span style="color: #99cc99;">else</span> <span style="color: #ffcc66;">&#129300;?</span>
-</pre>
+<pre><code class=" haskell" >ifEvenAdd2 :: Integer -&gt; Integer
+ifEvenAdd2 n = if even n then n + 2 else 🤔?
+</code></pre>
 </div>
 
 </section>
-<section id="slide-org4cb517b">
-<h3 id="org4cb517b">Maybe to rescue</h3>
+<section id="slide-org8091f6c">
+<h3 id="org8091f6c">Maybe to rescue</h3>
 <div class="org-src-container">
 
-<pre class="src src-haskell"><span style="color: #f99157;">ifEvenAdd2</span> <span style="color: #ffcc66;">::</span> <span style="color: #6699cc;">Integer</span> <span style="color: #ffcc66;">-&gt;</span> <span style="color: #6699cc;">Maybe</span> <span style="color: #6699cc;">Integer</span>
-<span style="color: #f99157;">ifEvenAdd2</span> n <span style="color: #ffcc66;">=</span> <span style="color: #99cc99;">if</span> even n <span style="color: #99cc99;">then</span> n <span style="color: #ffcc66;">+</span> <span style="color: #6699cc;">2</span> <span style="color: #99cc99;">else</span> <span style="color: #6699cc;">Nothing</span>
-</pre>
+<pre><code class=" haskell" >ifEvenAdd2 :: Integer -&gt; Maybe Integer
+ifEvenAdd2 n = if even n then n + 2 else Nothing
+</code></pre>
 </div>
 
 <p>
@@ -105,32 +106,171 @@ Is an improvement, but still we have some problems
 </p>
 
 </section>
-<section id="slide-org1f7241f">
-<h3 id="org1f7241f">Final version</h3>
+<section id="slide-orge1bf1e3">
+<h3 id="orge1bf1e3">Final version</h3>
 <div class="org-src-container">
 
-<pre class="src src-haskell"><span style="color: #f99157;">ifEvenAdd2</span> <span style="color: #ffcc66;">::</span> <span style="color: #6699cc;">Integer</span> <span style="color: #ffcc66;">-&gt;</span> <span style="color: #6699cc;">Maybe</span> <span style="color: #6699cc;">Integer</span>
-<span style="color: #f99157;">ifEvenAdd2</span> n <span style="color: #ffcc66;">=</span> <span style="color: #99cc99;">if</span> even n <span style="color: #99cc99;">then</span> <span style="color: #6699cc;">Just</span> <span style="color: #cccccc;">(</span>n <span style="color: #ffcc66;">+</span> <span style="color: #6699cc;">2</span><span style="color: #cccccc;">)</span> <span style="color: #99cc99;">else</span> <span style="color: #6699cc;">Nothing</span>
-</pre>
+<pre><code class=" haskell" >ifEvenAdd2 :: Integer -&gt; Maybe Integer
+ifEvenAdd2 n = if even n then Just (n + 2) else Nothing
+</code></pre>
+</div>
+
+</section>
+<section id="slide-org3b15652">
+<h3 id="org3b15652">Smart constructors for datatype I</h3>
+<p>
+Let's consider the next <code>Person</code> type
+</p>
+
+<div class="org-src-container">
+
+<pre><code class=" haskell" >type Name = String
+type Age = Integer
+
+data Person = Person Name Age deriving Show
+</code></pre>
+</div>
+
+<aside class="notes">
+<p>
+Problems with this example:
+</p>
+<ol>
+<li>We can construct a Person with an empty string as name</li>
+<li>We can construct a Person with an negative years old</li>
+
+</ol>
+<p>
+This is no problem to fix with <code>Maybe</code>
+</p>
+
+</aside>
+
+</section>
+<section id="slide-org50135c8">
+<h3 id="org50135c8">Smart constructors for datatype II</h3>
+<p>
+Fit the <code>Person</code> type
+</p>
+
+<div class="org-src-container">
+
+<pre><code class=" haskell" data-line-numbers='1|3'>type Name = String
+type Age = Integer
+
+data Person = Person Name Age deriving Show
+
+mkPerson :: Name -&gt; Age -&gt; Maybe Person
+mkPerson :: name age
+  | name /= "" &amp;&amp; age &gt;= 0 = Just $ Person name age
+  | otherwise = Nothing
+</code></pre>
+</div>
+
+<aside class="notes">
+<p>
+How to know if was the name, the age or both that was bad?
+</p>
+
+</aside>
+
+</section>
+<section id="slide-orgbcf0fa6">
+<h3 id="orgbcf0fa6">Smart constructors for datatype III</h3>
+<p>
+<code>mkPerson</code> is what we call a smart constructor. It allows us to construct values of a type
+only when they meet certain criteria, so that we know we have a valid value,
+and return an explicit signal when we do not.
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-orgdd9bec5">
+<h2 id="orgdd9bec5">Bleating <code>Either</code></h2>
+<p>
+Let's check the <code>Either</code> datatype
+</p>
+
+<div class="org-src-container">
+
+<pre><code class=" haskell" >data Either a b = Left a | Right b
+</code></pre>
+</div>
+
+</section>
+<section id="slide-org7bb8084">
+<h3 id="org7bb8084">Remember the goal</h3>
+<p>
+What we want is a way to know <i>why</i> our inputs were incorrect <i>if</i> they were incorrect
+</p>
+
+</section>
+<section id="slide-orgd854f79">
+<h3 id="orgd854f79">Initial proposal I</h3>
+<p>
+Define and <code>PersonInvalid</code> data constructor,
+</p>
+<div class="org-src-container">
+
+<pre><code class=" haskell" >data PersonInvalid = NameEmpty 
+                   | AgeTooLow
+                   deriving (Eq, Show)
+</code></pre>
+</div>
+
+<aside class="notes">
+<p>
+<code>Eq</code> because otherwise we cannot equality check the constructors
+</p>
+
+</aside>
+
+<p>
+and use it in the definition of the <code>mkPerson</code> data type:
+</p>
+
+<div class="org-src-container">
+
+<pre><code class=" haskell" >mkPerson :: Name -&gt; Age -&gt; Either PersonInvalid Person
+</code></pre>
+</div>
+
+</section>
+<section id="slide-org4ea3456">
+<h3 id="org4ea3456">Initial proposal II</h3>
+<div class="org-src-container">
+
+<pre><code class=" haskell" >type Name = String
+type Age = Integer
+
+data Person = Person Name Age deriving Show
+data PersonInvalid = NameEmpty
+                   | AgeTooLow
+                   deriving (Eq, Show)
+
+mkPerson :: Name
+          -&gt; Age
+          -&gt; Either PersonInvalid Person
+
+makePerson name age
+| name /= "" &amp;&amp; age &gt;= 0 = Right $ Person name age
+| name = ¨ = Left NameEmpty
+| otherwise = Left AgeTooLow
+</code></pre>
 </div>
 
 </section>
 </section>
 <section>
-<section id="slide-org2547156">
-<h2 id="org2547156">Bleating <code>Either</code></h2>
+<section id="slide-org7d6bb86">
+<h2 id="org7d6bb86">Kinds, a thousand stars in your types</h2>
 
 </section>
 </section>
 <section>
-<section id="slide-org8ecac8d">
-<h2 id="org8ecac8d">Kinds, a thousand stars in your types</h2>
-
-</section>
-</section>
-<section>
-<section id="slide-orgce432a9">
-<h2 id="orgce432a9">Definitions</h2>
+<section id="slide-org179d5ea">
+<h2 id="org179d5ea">Definitions</h2>
 <ol>
 <li>A higher kinded type is any type whose kind has a function arrow in it and which can be described</li>
 
@@ -145,11 +285,11 @@ Example of higher kind:
 
 <div class="org-src-container">
 
-<pre class="src src-haskell"><span style="color: #6699cc;">Maybe</span>  <span style="color: #ffcc66;">::</span> <span style="color: #ffcc66;">*</span> <span style="color: #ffcc66;">-&gt;</span> <span style="color: #ffcc66;">*</span>
-<span style="color: #cccccc;">[]</span>     <span style="color: #ffcc66;">::</span> <span style="color: #ffcc66;">*</span> <span style="color: #ffcc66;">-&gt;</span> <span style="color: #ffcc66;">*</span>
-<span style="color: #6699cc;">Either</span> <span style="color: #ffcc66;">::</span> <span style="color: #ffcc66;">*</span> <span style="color: #ffcc66;">-&gt;</span> <span style="color: #ffcc66;">*</span> <span style="color: #ffcc66;">-&gt;</span> <span style="color: #ffcc66;">*</span>
-<span style="color: #cccccc;">[</span><span style="color: #ffcc66;">-&gt;</span><span style="color: #cccccc;">]</span>     <span style="color: #ffcc66;">::</span> <span style="color: #ffcc66;">*</span> <span style="color: #ffcc66;">-&gt;</span> <span style="color: #ffcc66;">*</span> <span style="color: #ffcc66;">-&gt;</span> <span style="color: #ffcc66;">*</span>
-</pre>
+<pre><code class=" haskell" >Maybe  :: * -&gt; *
+[]     :: * -&gt; *
+Either :: * -&gt; * -&gt; *
+[-&gt;]     :: * -&gt; * -&gt; *
+</code></pre>
 </div>
 
 <p>
@@ -158,11 +298,11 @@ Example of not higher kind:
 
 <div class="org-src-container">
 
-<pre class="src src-haskell"><span style="color: #6699cc;">Int</span>    <span style="color: #ffcc66;">::</span> <span style="color: #ffcc66;">*</span>
-<span style="color: #6699cc;">Char</span>   <span style="color: #ffcc66;">::</span> <span style="color: #ffcc66;">*</span>
-<span style="color: #6699cc;">String</span> <span style="color: #ffcc66;">::</span> <span style="color: #ffcc66;">*</span>
-<span style="color: #cccccc;">[</span><span style="color: #6699cc;">Char</span><span style="color: #cccccc;">]</span> <span style="color: #ffcc66;">::</span> <span style="color: #ffcc66;">*</span>
-</pre>
+<pre><code class=" haskell" >Int    :: *
+Char   :: *
+String :: *
+[Char] :: *
+</code></pre>
 </div>
 
 <blockquote>
@@ -203,11 +343,7 @@ transitionSpeed: 'default',
 
 // Optional libraries used to extend reveal.js
 dependencies: [
- { src: 'http://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
- { src: 'http://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
- { src: 'http://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
- { src: 'http://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } },
- { src: 'http://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } }]
+ { src: 'http://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }]
 
 });
 </script>
