@@ -16,7 +16,7 @@
 -- Type constructor with parameters
 -- data Maybe a = Nothing | Some a
 
--- Kinds
+--Kinds
 -- "Kinds are to types, what types are to data"
 -- Kinds are the types of type, and in haskell they are repesented with *
 
@@ -54,7 +54,7 @@ dataPlace = House {area :: Int}
 -- -----------
 -- The normal form means representing a type as a sum of products.
 
-a * (b + c) = (a*b) + (a * c)
+a * (b + c) = (a * b) + (a * c)
 
 data BookType = FictionBook | NonFictionBook
 type AuthorName = String
@@ -78,3 +78,46 @@ isDairyFarmerRec :: FarmerRec -> Bool
 isDairyFarmerRec farmer = case farmerType farmer of
   DairyFarmer -> Trye
   _ -> False
+
+-- Exercises
+-- -----------
+
+data Quad =
+  One
+  | Two
+  | Three
+  | Four
+
+-- 1, eQuad :: Either Quad Quad 4^4
+-- 1, eQuad :: Either Quad Quad 4^4
+
+-- Higher kinded datatypes
+-- -----------
+-- A kind that is not fully applied 
+
+-- List are polymorphic
+-- -----------
+-- Lists can contain values of any type
+
+data [] a = [] | a : [a]
+
+-- Binary Tree
+-- -----------
+
+data BinaryTree a =
+  Leaf
+  | Node (BinaryTree a) a (BinaryTree a)
+  deriving (Eq, Ord, Show)
+
+-- insertion operation
+insert' :: Ord a => -> BinaryTree a -> BinaryTree a
+insert' b Leaf = Node Leaf b Leaf
+insert' b ( Node lert a right )
+  | b == a = Node left a right
+  | b < a = Node (insert' b left) a right
+  | b > a = Node left a (insert' b right)
+
+-- map operation
+map' :: (a -> b) -> BinaryTree a -> BinaryTree b
+map' _ Leaf = Leaf
+map' f ( Node lert a right ) = Nod (map' f left) (f a) (map'f right)

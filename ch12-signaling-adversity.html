@@ -32,8 +32,8 @@
 </section>
 
 <section>
-<section id="slide-org543ed00">
-<h2 id="org543ed00">Outline</h2>
+<section id="slide-org398dc90">
+<h2 id="org398dc90">Outline</h2>
 <p>
 The chapter will include:
 </p>
@@ -48,8 +48,8 @@ The chapter will include:
 </section>
 </section>
 <section>
-<section id="slide-orgcc87679">
-<h2 id="orgcc87679">Signaling adversity</h2>
+<section id="slide-org137ff03">
+<h2 id="org137ff03">Signaling adversity</h2>
 <p>
 Sometimes it is not convenient for every value in a datatype to make sense for your programs.
 When that happens in Haskell the <code>Maybe</code> and <code>Either</code> datatypes come to rescue.
@@ -58,8 +58,8 @@ When that happens in Haskell the <code>Maybe</code> and <code>Either</code> data
 </section>
 </section>
 <section>
-<section id="slide-orgcaead70">
-<h2 id="orgcaead70">Love <code>Nothing</code></h2>
+<section id="slide-orgef719c1">
+<h2 id="orgef719c1">Love <code>Nothing</code></h2>
 <p>
 Let's consider the definition of <code>Maybe</code>:
 </p>
@@ -82,8 +82,8 @@ Maybe lets us return a default Nothing value when we don't have any sensible val
 </aside>
 
 </section>
-<section id="slide-orgbd4f335">
-<h3 id="orgbd4f335">Example</h3>
+<section id="slide-orgeee2d13">
+<h3 id="orgeee2d13">Example</h3>
 <div class="org-src-container">
 
 <pre><code class=" haskell" >ifEvenAdd2 :: Integer -&gt; Integer
@@ -92,8 +92,8 @@ ifEvenAdd2 n = if even n then n + 2 else 🤔?
 </div>
 
 </section>
-<section id="slide-org8091f6c">
-<h3 id="org8091f6c">Maybe to rescue</h3>
+<section id="slide-orgddbdde7">
+<h3 id="orgddbdde7">Maybe to rescue</h3>
 <div class="org-src-container">
 
 <pre><code class=" haskell" >ifEvenAdd2 :: Integer -&gt; Maybe Integer
@@ -106,8 +106,8 @@ Is an improvement, but still we have some problems
 </p>
 
 </section>
-<section id="slide-orge1bf1e3">
-<h3 id="orge1bf1e3">Final version</h3>
+<section id="slide-org87a5b25">
+<h3 id="org87a5b25">Final version</h3>
 <div class="org-src-container">
 
 <pre><code class=" haskell" >ifEvenAdd2 :: Integer -&gt; Maybe Integer
@@ -116,8 +116,8 @@ ifEvenAdd2 n = if even n then Just (n + 2) else Nothing
 </div>
 
 </section>
-<section id="slide-org3b15652">
-<h3 id="org3b15652">Smart constructors for datatype I</h3>
+<section id="slide-org2ca155f">
+<h3 id="org2ca155f">Smart constructors for datatype I</h3>
 <p>
 Let's consider the next <code>Person</code> type
 </p>
@@ -147,15 +147,15 @@ This is no problem to fix with <code>Maybe</code>
 </aside>
 
 </section>
-<section id="slide-org50135c8">
-<h3 id="org50135c8">Smart constructors for datatype II</h3>
+<section id="slide-orgd02d125">
+<h3 id="orgd02d125">Smart constructors for datatype II</h3>
 <p>
 Fit the <code>Person</code> type
 </p>
 
 <div class="org-src-container">
 
-<pre><code class=" haskell" data-line-numbers='1|3'>type Name = String
+<pre><code class=" haskell" data-line-numbers='1-3'>type Name = String
 type Age = Integer
 
 data Person = Person Name Age deriving Show
@@ -175,8 +175,8 @@ How to know if was the name, the age or both that was bad?
 </aside>
 
 </section>
-<section id="slide-orgbcf0fa6">
-<h3 id="orgbcf0fa6">Smart constructors for datatype III</h3>
+<section id="slide-org8cc44fa">
+<h3 id="org8cc44fa">Smart constructors for datatype III</h3>
 <p>
 <code>mkPerson</code> is what we call a smart constructor. It allows us to construct values of a type
 only when they meet certain criteria, so that we know we have a valid value,
@@ -186,8 +186,8 @@ and return an explicit signal when we do not.
 </section>
 </section>
 <section>
-<section id="slide-orgdd9bec5">
-<h2 id="orgdd9bec5">Bleating <code>Either</code></h2>
+<section id="slide-orgf42ff9b">
+<h2 id="orgf42ff9b">Bleating <code>Either</code></h2>
 <p>
 Let's check the <code>Either</code> datatype
 </p>
@@ -199,15 +199,15 @@ Let's check the <code>Either</code> datatype
 </div>
 
 </section>
-<section id="slide-org7bb8084">
-<h3 id="org7bb8084">Remember the goal</h3>
+<section id="slide-org29723d8">
+<h3 id="org29723d8">Remember the goal</h3>
 <p>
 What we want is a way to know <i>why</i> our inputs were incorrect <i>if</i> they were incorrect
 </p>
 
 </section>
-<section id="slide-orgd854f79">
-<h3 id="orgd854f79">Initial proposal I</h3>
+<section id="slide-orgdaef398">
+<h3 id="orgdaef398">Initial proposal I</h3>
 <p>
 Define and <code>PersonInvalid</code> data constructor,
 </p>
@@ -237,8 +237,8 @@ and use it in the definition of the <code>mkPerson</code> data type:
 </div>
 
 </section>
-<section id="slide-org4ea3456">
-<h3 id="org4ea3456">Initial proposal II</h3>
+<section id="slide-org567dc07">
+<h3 id="org567dc07">Initial proposal II</h3>
 <div class="org-src-container">
 
 <pre><code class=" haskell" >type Name = String
@@ -261,16 +261,197 @@ makePerson name age
 </div>
 
 </section>
+<section id="slide-orgaad3876">
+<h3 id="orgaad3876">The <code>Left</code> and <code>Right</code> Convention</h3>
+<p>
+We use <code>Left</code> as our invalid or error constructor for a couple of
+reasons. It is conventional to do so in Haskell, but that convention
+came about for a reason. The reason has to do with the ordering of
+type arguments and application of functions.
+</p>
+
+<blockquote>
+<p>
+<code>Functor</code> spoiler
+</p>
+</blockquote>
+
 </section>
-<section>
-<section id="slide-org7d6bb86">
-<h2 id="org7d6bb86">Kinds, a thousand stars in your types</h2>
+<section id="slide-org18ef5da">
+<h3 id="org18ef5da">Another problem</h3>
+<p>
+We can't identify when both inputs are incorrect
+</p>
+
+</section>
+<section id="slide-orgd9e5599">
+<h3 id="orgd9e5599">The final version</h3>
+<div class="org-src-container">
+
+<pre><code class=" haskell" >type Name = String
+type Age = Integer
+type ValidatePerson a = Either [PersonInvalid] a
+
+data Person = Person Name Age deriving Show
+data PersonInvalid = NameEmpty
+                   | AgeTooLow
+                   deriving (Eq, Show)
+
+ageOkay :: Age -&gt; Either [PersonInvalid] Age
+ageOkay age = case age &gt;= 0 of
+  True -&gt; Right age
+  False -&gt; Left [AgeTooLow]
+
+nameOkay :: Name -&gt; Either [PersonInvalid] Name
+nameOkay name = case name /= "" of
+  True -&gt; Right name
+  False -&gt; Left [NameEmpty]
+
+mkPerson :: Name
+         -&gt; Age
+         -&gt; Either ValidatePerson Person
+
+makePerson name age =
+  mkPerson' (nameOkay name) (ageOkay age)
+
+mkPerson' :: ValidatePerson Name
+          -&gt; ValidatePerson Age
+          -&gt; ValidatePerson Person
+
+mkPerson' (Right nameOk) (Right ageOk) =
+  Right (Person nameOk ageOk)
+mkPerson' (Left badName) (Left badAge) =
+  Left (Person badName ++ badAge)
+mkPerson' (Left badName) _ = Left badName
+mkPerson' (Left badAge) _ = Left badAge
+</code></pre>
+</div>
 
 </section>
 </section>
 <section>
-<section id="slide-org179d5ea">
-<h2 id="org179d5ea">Definitions</h2>
+<section id="slide-org6239dfa">
+<h2 id="org6239dfa">Kinds, a thousand stars in your types</h2>
+<p>
+Kinds are types one level up. They are used to describe the types
+of type constructors. One noteworthy feature of Haskell is that it
+has <i>higher-kinded types</i>
+</p>
+
+</section>
+<section id="slide-orgea595c0">
+<h3 id="orgea595c0">Haskell report convention</h3>
+<ul>
+<li><i>Type constant</i>: types that no take arguments and already are types (e.g <code>Int</code>, <code>Bool</code>, <code>Char</code>)</li>
+<li><i>Type constructor</i>: types which must have arguments applied to become a type</li>
+
+</ul>
+
+<blockquote>
+<p>
+Remember: The syntax <code>::</code> usually means "has type of"
+</p>
+</blockquote>
+
+</section>
+<section id="slide-orgdcc3427">
+<h3 id="orgdcc3427">Type constructor example</h3>
+<div class="org-src-container">
+
+<pre><code class=" haskell" >data Exampe a = Blah | RoofGoats | Woot a
+</code></pre>
+</div>
+
+<p>
+<code>Example</code> is a type constructor rather than a constant because it takes a type
+argument <i><code>a</code></i> which is used with the <code>Woot</code> data constructor
+</p>
+
+<div class="org-src-container">
+
+<pre><code class=" haskell" >Prelude&gt; :k Example
+Example :: * -&gt; *
+</code></pre>
+</div>
+
+</section>
+<section id="slide-orgbe9b016">
+<h3 id="orgbe9b016">Maybe and Either are type constructors</h3>
+<p>
+The <code>Maybe</code> and <code>Either</code> datatypes we’ve just reviewed also have type
+constructors rather than constants. They have to be applied to an
+argument before they become concrete types.
+</p>
+
+<div class="org-src-container">
+
+<pre><code class=" haskell" >Prelude&gt; :k Maybe
+Maybe :: * -&gt; *
+
+Prelude&gt; :k Maybe Int
+Maybe Int :: *
+</code></pre>
+</div>
+
+<div class="org-src-container">
+
+<pre><code class=" haskell" >Prelude&gt; :k Either
+Either :: * -&gt; * -&gt; *
+
+Prelude&gt; :k Either Int
+Maybe Int :: * -&gt; 
+
+Prelude&gt; :k Either Int String
+Maybe Int String :: * 
+</code></pre>
+</div>
+
+</section>
+<section id="slide-orga21adc1">
+<h3 id="orga21adc1">Lifted and unlifted types</h3>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">&#xa0;</th>
+<th scope="col" class="org-left">Lifted</th>
+<th scope="col" class="org-left">Unlifted</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Symbol</td>
+<td class="org-left">*</td>
+<td class="org-left">#</td>
+</tr>
+
+<tr>
+<td class="org-left">Definiton</td>
+<td class="org-left">Includes any datatype you coulde define yourself</td>
+<td class="org-left">Any type which cannot be inhabited by bottom</td>
+</tr>
+
+<tr>
+<td class="org-left">Example</td>
+<td class="org-left">Mostly the datatype we have seen and use</td>
+<td class="org-left">Native machine types, and raw pointers</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+</section>
+<section>
+<section id="slide-org01149ed">
+<h2 id="org01149ed">Definitions</h2>
 <ol>
 <li>A higher kinded type is any type whose kind has a function arrow in it and which can be described</li>
 

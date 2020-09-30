@@ -210,6 +210,93 @@ mkPerson' (Left badAge) _ = Left badAge
 #+end_src
    
 * Kinds, a thousand stars in your types
+  
+Kinds are types one level up. They are used to describe the types
+of type constructors. One noteworthy feature of Haskell is that it
+has /higher-kinded types/
+
+** Haskell report convention
+   - /Type constant/: types that no take arguments and already are types (e.g ~Int~, ~Bool~, ~Char~)
+   - /Type constructor/: types which must have arguments applied to become a type
+   
+#+begin_quote
+Remember: The syntax ~::~ usually means "has type of"
+#+end_quote
+
+** Type constructor example
+   
+#+begin_src haskell
+data Exampe a = Blah | RoofGoats | Woot a
+#+end_src
+
+~Example~ is a type constructor rather than a constant because it takes a type
+argument /~a~/ which is used with the ~Woot~ data constructor
+
+#+begin_src haskell
+Prelude> :k Example
+Example :: * -> *
+#+end_src
+
+** ~Maybe~ and ~Either~ are type constructors
+   
+The ~Maybe~ and ~Either~ datatypes we’ve just reviewed also have type
+constructors rather than constants. They have to be applied to an
+argument before they become concrete types.
+
+#+begin_src haskell
+  Prelude> :k Maybe
+  Maybe :: * -> *
+  
+  Prelude> :k Maybe Int
+  Maybe Int :: *
+#+end_src
+
+#+begin_src haskell
+  Prelude> :k Either
+  Either :: * -> * -> *
+
+  Prelude> :k Either Int
+  Maybe Int :: * -> 
+  
+  Prelude> :k Either Int String
+  Maybe Int String :: * 
+#+end_src
+
+** Lifted and unlifted types
+
+|            | Lifted                                      | Unlifted                                       |
+|------------+---------------------------------------------+------------------------------------------------|
+| Symbol     | *                                           | #                                              |
+| Definition | Any type which can be inhabited by /bottom/ | Any type which cannot be inhabited by /bottom/ |
+| Example    | Mostly the datatype we have seen and use    | Native machine types, and raw pointers         |
+
+** Data constructors are functions
+   
+Remember that the difference between data constants and data constructors is the /arity/.
+Data constants are nullary, while data constructors are n-ary, and, for the second case
+once you apply them to their arguments, they return a value of the appropriate type.
+*i.e. data constructors really are functions.*
+
+** Examples
+   
+Nullary case
+
+#+begin_src haskell
+  Prelude> data Trivial = Trivial deriving Show
+  Prelude> Trivial 1 -- error: match type 'Integer -> t' to 'Trivial'
+#+end_src
+
+Unary case
+
+#+begin_src haskell
+  Prelude> data UnaryCase = UnaryCase Int deriving Show
+  Prelude> :t UnaryCase
+  UnaryCase :: Int -> UnaryCase
+  Prelude> UnaryCase 21
+  UnaryCase 21
+
+  Prelude> UnaryCase "blah" -- error: match type '[Char]' to 'Integer'
+#+end_src
 
 * Definitions
 1. A higher kinded type is any type whose kind has a function arrow in it and which can be described
