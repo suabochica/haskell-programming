@@ -1,4 +1,4 @@
-module Exercises where
+module StringProcessing where
 
 -- id :: a -> a
 -- a has the kind *
@@ -29,6 +29,7 @@ replaceThe xs =
 isVowel :: Char -> Bool
 isVowel x = any (== x) "aeiou"
 
+-- @ "Read as" in pattern matching
 beforeVowel phrase@('t':'h':'e':' ':x:xs)
   | isVowel x = Nothing
   | otherwise = Just phrase
