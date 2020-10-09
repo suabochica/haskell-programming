@@ -51,6 +51,14 @@ ifEvenAdd2 n = if even n then n + 2 else Nothing
 
 Is an improvement, but still we have some problems
 
+#+begin_notes
+Problems with this example:
+1. Nothing has the type Maybe a, and a can be assumed to be any type.
+2. Error: Couldn't match expected type 'Maybe Integer' with actual type 'Integer'
+3. Solution: Wrap into the 'Just' constructor
+This is no problem to fix with ~Maybe~
+#+end_notes
+
 ** Final version
    
 #+begin_src haskell
@@ -149,9 +157,9 @@ mkPerson :: Name
           -> Age
           -> Either PersonInvalid Person
 
-makePerson name age
+mkPerson name age
 | name /= "" && age >= 0 = Right $ Person name age
-| name = ¨ = Left NameEmpty
+| name = "" = Left NameEmpty
 | otherwise = Left AgeTooLow
 #+end_src
 
@@ -194,7 +202,7 @@ mkPerson :: Name
          -> Age
          -> Either ValidatePerson Person
 
-makePerson name age =
+mkPerson name age =
   mkPerson' (nameOkay name) (ageOkay age)
 
 mkPerson' :: ValidatePerson Name
@@ -216,6 +224,7 @@ of type constructors. One noteworthy feature of Haskell is that it
 has /higher-kinded types/
 
 ** Haskell report convention
+   
    - /Type constant/: types that no take arguments and already are types (e.g ~Int~, ~Bool~, ~Char~)
    - /Type constructor/: types which must have arguments applied to become a type
    
@@ -298,6 +307,36 @@ Unary case
   Prelude> UnaryCase "blah" -- error: match type '[Char]' to 'Integer'
 #+end_src
 
+* Anamorphism
+
+While the idea of catamorphisms is still relatively fresh in our minds,
+let’s turn our attention to their dual: /anamorphisms/:
+
+- *folds*, or catamorphisms, let us break data structures down then
+- *unfolds*, or anamorphisms, let us build them up
+
+** Unfold: ~iterate~ and ~unfoldr~
+   
+~iterate~ is a very limited unfold that never ends, then we must use ~take~ to get a finite list
+
+#+begin_src haskell
+Prelude> :t iterate
+iterate :: (a -> a) -> a -> [a] haskell
+
+Prelude> take 10 $ iterate (+1) 0
+[0,1,2,3,4,5,6,7,8,9]
+#+end_src
+
+~unfoldr~ is more general unfold, the full monty as it were, and we can get the same thing as ~iterate~
+
+#+begin_src haskell
+Prelude> :t unfoldr
+unfoldr :: (b -> Maybe (a, b)) -> b -> [a]
+
+Prelude> take 10 $ unfoldr (\b -> Just (b, b+1)) 0
+[0,1,2,3,4,5,6,7,8,9]
+#+end_src
+
 * Definitions
 1. A higher kinded type is any type whose kind has a function arrow in it and which can be described
 as a type constructor rather than a type constant:
@@ -323,3 +362,5 @@ String :: *
 #+begin_quote
 Note: This is not to be confused with higher kinded /polymorphism/
 #+end_quote
+
+* Thanks

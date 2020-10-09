@@ -32,8 +32,8 @@
 </section>
 
 <section>
-<section id="slide-org398dc90">
-<h2 id="org398dc90">Outline</h2>
+<section id="slide-org779ae63">
+<h2 id="org779ae63">Outline</h2>
 <p>
 The chapter will include:
 </p>
@@ -48,8 +48,8 @@ The chapter will include:
 </section>
 </section>
 <section>
-<section id="slide-org137ff03">
-<h2 id="org137ff03">Signaling adversity</h2>
+<section id="slide-orgc38e46a">
+<h2 id="orgc38e46a">Signaling adversity</h2>
 <p>
 Sometimes it is not convenient for every value in a datatype to make sense for your programs.
 When that happens in Haskell the <code>Maybe</code> and <code>Either</code> datatypes come to rescue.
@@ -58,8 +58,8 @@ When that happens in Haskell the <code>Maybe</code> and <code>Either</code> data
 </section>
 </section>
 <section>
-<section id="slide-orgef719c1">
-<h2 id="orgef719c1">Love <code>Nothing</code></h2>
+<section id="slide-orgc046dc2">
+<h2 id="orgc046dc2">Love <code>Nothing</code></h2>
 <p>
 Let's consider the definition of <code>Maybe</code>:
 </p>
@@ -82,8 +82,8 @@ Maybe lets us return a default Nothing value when we don't have any sensible val
 </aside>
 
 </section>
-<section id="slide-orgeee2d13">
-<h3 id="orgeee2d13">Example</h3>
+<section id="slide-orgd8a2d87">
+<h3 id="orgd8a2d87">Example</h3>
 <div class="org-src-container">
 
 <pre><code class=" haskell" >ifEvenAdd2 :: Integer -&gt; Integer
@@ -92,8 +92,8 @@ ifEvenAdd2 n = if even n then n + 2 else 🤔?
 </div>
 
 </section>
-<section id="slide-orgddbdde7">
-<h3 id="orgddbdde7">Maybe to rescue</h3>
+<section id="slide-orgc687130">
+<h3 id="orgc687130">Maybe to rescue</h3>
 <div class="org-src-container">
 
 <pre><code class=" haskell" >ifEvenAdd2 :: Integer -&gt; Maybe Integer
@@ -105,9 +105,25 @@ ifEvenAdd2 n = if even n then n + 2 else Nothing
 Is an improvement, but still we have some problems
 </p>
 
+<aside class="notes">
+<p>
+Problems with this example:
+</p>
+<ol>
+<li>Nothing has the type Maybe a, and a can be assumed to be any type.</li>
+<li>Error: Couldn't match expected type 'Maybe Integer' with actual type 'Integer'</li>
+<li>Solution: Wrap into the 'Just' constructor</li>
+
+</ol>
+<p>
+This is no problem to fix with <code>Maybe</code>
+</p>
+
+</aside>
+
 </section>
-<section id="slide-org87a5b25">
-<h3 id="org87a5b25">Final version</h3>
+<section id="slide-org6ae46c1">
+<h3 id="org6ae46c1">Final version</h3>
 <div class="org-src-container">
 
 <pre><code class=" haskell" >ifEvenAdd2 :: Integer -&gt; Maybe Integer
@@ -116,8 +132,8 @@ ifEvenAdd2 n = if even n then Just (n + 2) else Nothing
 </div>
 
 </section>
-<section id="slide-org2ca155f">
-<h3 id="org2ca155f">Smart constructors for datatype I</h3>
+<section id="slide-org7f4edb5">
+<h3 id="org7f4edb5">Smart constructors for datatype I</h3>
 <p>
 Let's consider the next <code>Person</code> type
 </p>
@@ -147,8 +163,8 @@ This is no problem to fix with <code>Maybe</code>
 </aside>
 
 </section>
-<section id="slide-orgd02d125">
-<h3 id="orgd02d125">Smart constructors for datatype II</h3>
+<section id="slide-org72326ae">
+<h3 id="org72326ae">Smart constructors for datatype II</h3>
 <p>
 Fit the <code>Person</code> type
 </p>
@@ -175,8 +191,8 @@ How to know if was the name, the age or both that was bad?
 </aside>
 
 </section>
-<section id="slide-org8cc44fa">
-<h3 id="org8cc44fa">Smart constructors for datatype III</h3>
+<section id="slide-org25949a1">
+<h3 id="org25949a1">Smart constructors for datatype III</h3>
 <p>
 <code>mkPerson</code> is what we call a smart constructor. It allows us to construct values of a type
 only when they meet certain criteria, so that we know we have a valid value,
@@ -186,8 +202,8 @@ and return an explicit signal when we do not.
 </section>
 </section>
 <section>
-<section id="slide-orgf42ff9b">
-<h2 id="orgf42ff9b">Bleating <code>Either</code></h2>
+<section id="slide-org4f5bb9f">
+<h2 id="org4f5bb9f">Bleating <code>Either</code></h2>
 <p>
 Let's check the <code>Either</code> datatype
 </p>
@@ -199,15 +215,15 @@ Let's check the <code>Either</code> datatype
 </div>
 
 </section>
-<section id="slide-org29723d8">
-<h3 id="org29723d8">Remember the goal</h3>
+<section id="slide-org3905b58">
+<h3 id="org3905b58">Remember the goal</h3>
 <p>
 What we want is a way to know <i>why</i> our inputs were incorrect <i>if</i> they were incorrect
 </p>
 
 </section>
-<section id="slide-orgdaef398">
-<h3 id="orgdaef398">Initial proposal I</h3>
+<section id="slide-orgf380b03">
+<h3 id="orgf380b03">Initial proposal I</h3>
 <p>
 Define and <code>PersonInvalid</code> data constructor,
 </p>
@@ -237,8 +253,8 @@ and use it in the definition of the <code>mkPerson</code> data type:
 </div>
 
 </section>
-<section id="slide-org567dc07">
-<h3 id="org567dc07">Initial proposal II</h3>
+<section id="slide-orgfdd4f5b">
+<h3 id="orgfdd4f5b">Initial proposal II</h3>
 <div class="org-src-container">
 
 <pre><code class=" haskell" >type Name = String
@@ -253,16 +269,16 @@ mkPerson :: Name
           -&gt; Age
           -&gt; Either PersonInvalid Person
 
-makePerson name age
+mkPerson name age
 | name /= "" &amp;&amp; age &gt;= 0 = Right $ Person name age
-| name = ¨ = Left NameEmpty
+| name = "" = Left NameEmpty
 | otherwise = Left AgeTooLow
 </code></pre>
 </div>
 
 </section>
-<section id="slide-orgaad3876">
-<h3 id="orgaad3876">The <code>Left</code> and <code>Right</code> Convention</h3>
+<section id="slide-org453c8ea">
+<h3 id="org453c8ea">The <code>Left</code> and <code>Right</code> Convention</h3>
 <p>
 We use <code>Left</code> as our invalid or error constructor for a couple of
 reasons. It is conventional to do so in Haskell, but that convention
@@ -277,15 +293,15 @@ type arguments and application of functions.
 </blockquote>
 
 </section>
-<section id="slide-org18ef5da">
-<h3 id="org18ef5da">Another problem</h3>
+<section id="slide-orgd1c8281">
+<h3 id="orgd1c8281">Another problem</h3>
 <p>
 We can't identify when both inputs are incorrect
 </p>
 
 </section>
-<section id="slide-orgd9e5599">
-<h3 id="orgd9e5599">The final version</h3>
+<section id="slide-org13cddcd">
+<h3 id="org13cddcd">The final version</h3>
 <div class="org-src-container">
 
 <pre><code class=" haskell" >type Name = String
@@ -311,7 +327,7 @@ mkPerson :: Name
          -&gt; Age
          -&gt; Either ValidatePerson Person
 
-makePerson name age =
+mkPerson name age =
   mkPerson' (nameOkay name) (ageOkay age)
 
 mkPerson' :: ValidatePerson Name
@@ -330,8 +346,8 @@ mkPerson' (Left badAge) _ = Left badAge
 </section>
 </section>
 <section>
-<section id="slide-org6239dfa">
-<h2 id="org6239dfa">Kinds, a thousand stars in your types</h2>
+<section id="slide-org5a7fbab">
+<h2 id="org5a7fbab">Kinds, a thousand stars in your types</h2>
 <p>
 Kinds are types one level up. They are used to describe the types
 of type constructors. One noteworthy feature of Haskell is that it
@@ -339,8 +355,8 @@ has <i>higher-kinded types</i>
 </p>
 
 </section>
-<section id="slide-orgea595c0">
-<h3 id="orgea595c0">Haskell report convention</h3>
+<section id="slide-org56925a0">
+<h3 id="org56925a0">Haskell report convention</h3>
 <ul>
 <li><i>Type constant</i>: types that no take arguments and already are types (e.g <code>Int</code>, <code>Bool</code>, <code>Char</code>)</li>
 <li><i>Type constructor</i>: types which must have arguments applied to become a type</li>
@@ -354,8 +370,8 @@ Remember: The syntax <code>::</code> usually means "has type of"
 </blockquote>
 
 </section>
-<section id="slide-orgdcc3427">
-<h3 id="orgdcc3427">Type constructor example</h3>
+<section id="slide-org0426768">
+<h3 id="org0426768">Type constructor example</h3>
 <div class="org-src-container">
 
 <pre><code class=" haskell" >data Exampe a = Blah | RoofGoats | Woot a
@@ -375,8 +391,8 @@ Example :: * -&gt; *
 </div>
 
 </section>
-<section id="slide-orgbe9b016">
-<h3 id="orgbe9b016">Maybe and Either are type constructors</h3>
+<section id="slide-orge64c0ef">
+<h3 id="orge64c0ef"><code>Maybe</code> and <code>Either</code> are type constructors</h3>
 <p>
 The <code>Maybe</code> and <code>Either</code> datatypes we’ve just reviewed also have type
 constructors rather than constants. They have to be applied to an
@@ -407,8 +423,8 @@ Maybe Int String :: *
 </div>
 
 </section>
-<section id="slide-orga21adc1">
-<h3 id="orga21adc1">Lifted and unlifted types</h3>
+<section id="slide-orgdc761e0">
+<h3 id="orgdc761e0">Lifted and unlifted types</h3>
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -434,9 +450,9 @@ Maybe Int String :: *
 </tr>
 
 <tr>
-<td class="org-left">Definiton</td>
-<td class="org-left">Includes any datatype you coulde define yourself</td>
-<td class="org-left">Any type which cannot be inhabited by bottom</td>
+<td class="org-left">Definition</td>
+<td class="org-left">Any type which can be inhabited by <i>bottom</i></td>
+<td class="org-left">Any type which cannot be inhabited by <i>bottom</i></td>
 </tr>
 
 <tr>
@@ -448,10 +464,97 @@ Maybe Int String :: *
 </table>
 
 </section>
+<section id="slide-org8fa722d">
+<h3 id="org8fa722d">Data constructors are functions</h3>
+<p>
+Remember that the difference between data constants and data constructors is the <i>arity</i>.
+Data constants are nullary, while data constructors are n-ary, and, for the second case
+once you apply them to their arguments, they return a value of the appropriate type.
+<b>i.e. data constructors really are functions.</b>
+</p>
+
+</section>
+<section id="slide-org5d95ff8">
+<h3 id="org5d95ff8">Examples</h3>
+<p>
+Nullary case
+</p>
+
+<div class="org-src-container">
+
+<pre><code class=" haskell" >Prelude&gt; data Trivial = Trivial deriving Show
+Prelude&gt; Trivial 1 -- error: match type 'Integer -&gt; t' to 'Trivial'
+</code></pre>
+</div>
+
+<p>
+Unary case
+</p>
+
+<div class="org-src-container">
+
+<pre><code class=" haskell" >Prelude&gt; data UnaryCase = UnaryCase Int deriving Show
+Prelude&gt; :t UnaryCase
+UnaryCase :: Int -&gt; UnaryCase
+Prelude&gt; UnaryCase 21
+UnaryCase 21
+
+Prelude&gt; UnaryCase "blah" -- error: match type '[Char]' to 'Integer'
+</code></pre>
+</div>
+
+</section>
 </section>
 <section>
-<section id="slide-org01149ed">
-<h2 id="org01149ed">Definitions</h2>
+<section id="slide-orgd35f2e5">
+<h2 id="orgd35f2e5">Anamorphism</h2>
+<p>
+While the idea of catamorphisms is still relatively fresh in our minds,
+let’s turn our attention to their dual: <i>anamorphisms</i>:
+</p>
+
+<ul>
+<li><b>folds</b>, or catamorphisms, let us break data structures down then</li>
+<li><b>unfolds</b>, or anamorphisms, let us build them up</li>
+
+</ul>
+
+</section>
+<section id="slide-org40aba94">
+<h3 id="org40aba94">Unfold: <code>iterate</code> and <code>unfoldr</code></h3>
+<p>
+<code>iterate</code> is a very limited unfold that never ends, then we must use <code>take</code> to get a finite list
+</p>
+
+<div class="org-src-container">
+
+<pre><code class=" haskell" >Prelude&gt; :t iterate
+iterate :: (a -&gt; a) -&gt; a -&gt; [a] haskell
+
+Prelude&gt; take 10 $ iterate (+1) 0
+[0,1,2,3,4,5,6,7,8,9]
+</code></pre>
+</div>
+
+<p>
+<code>unfoldr</code> is more general unfold, the full monty as it were, and we can get the same thing as <code>iterate</code>
+</p>
+
+<div class="org-src-container">
+
+<pre><code class=" haskell" >Prelude&gt; :t unfoldr
+unfoldr :: (b -&gt; Maybe (a, b)) -&gt; b -&gt; [a]
+
+Prelude&gt; take 10 $ unfoldr (\b -&gt; Just (b, b+1)) 0
+[0,1,2,3,4,5,6,7,8,9]
+</code></pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org1d03de4">
+<h2 id="org1d03de4">Definitions</h2>
 <ol>
 <li>A higher kinded type is any type whose kind has a function arrow in it and which can be described</li>
 
@@ -491,6 +594,12 @@ String :: *
 Note: This is not to be confused with higher kinded <i>polymorphism</i>
 </p>
 </blockquote>
+
+</section>
+</section>
+<section>
+<section id="slide-orgb975ca3">
+<h2 id="orgb975ca3">Thanks</h2>
 </section>
 </section>
 </div>
