@@ -1,0 +1,49 @@
+#+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/3.0.0/
+#+OPTIONS: toc:nil num:nil timestamp:nil
+#+OPTIONS: reveal_width:1200 reveal_height:800 reveal_progress:t reveal_center:t
+#+REVEAL_TRANS: zoom
+#+REVEAL_THEME: night
+#+REVEAL_INIT_OPTIONS: slideNumber:true
+#+REVEAL_PLUGINS: (highlight)
+
+#+TITLE: Functor
+#+DESCRIPTION: Lifting is the "cheat mode" of tetris.
+#+AUTHOR: Sergio Benítez
+
+* Spoiler
+   From Monoid to Monads we will follow the next path: we abstract out a common pattern,
+make certain it follows some laws, give it an awesome name, and wonder how we ever lived
+without it.
+
+* Outline
+  This chapter will include:
+- the return of the higher-kinded types;
+- fmaps galore, and not just on list;
+- no more digression about dusty logicians;
+- words about typeclasses and constructor classes;
+- puns based on George Clinton music, probably.
+
+* What is a functor?
+  A functor is a way to apply a function over some structure that we don't want to alter.
+  
+Functor is all about a pattern of mapping over structure, and, we have use this pattern
+before. Remember the ~map~ on List, and the ~fmap~.
+ 
+** Haskell Functor typeclass
+#+begin_src haskell
+class Functor f where
+  fmap :: (a -> b) -> f a -> f b
+#+end_src
+
+#+begin_notes
+1. class, the keyword to begin the definition of a typeclass
+2. Functor, is the name of the class that we are defining
+3. f, refers to some sort of type. By convetion, f refers to functional structure.
+4. where, the keyword ends the declaration of the typeclass, and after it the operation are provided
+5. fmap, the name of an operation
+6. a -> b, is any function
+7. f a, is an argument where f is a functor that takes the a type argument.
+8. f b, the return value.
+#+end_notes
+
+* ~fmap~

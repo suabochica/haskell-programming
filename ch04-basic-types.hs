@@ -1,4 +1,4 @@
-module Strings where
+module BasicTypes where
 
 awesome = ["Papuchon", "curry", ":)"]
 alsoAwesome = ["Quake", "The Simons"]
