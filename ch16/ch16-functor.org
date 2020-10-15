@@ -47,3 +47,99 @@ class Functor f where
 #+end_notes
 
 * ~fmap~
+  Below list, ~fmap~ and ~map~ seem to do the same thing:  
+  
+  #+begin_src haskell
+    Prelude> map (/x -> x > 3) [1..6]
+    [False, False, False, True, True, True]
+
+  
+    Prelude> fmap (/x -> x > 3) [1..6]
+    [False, False, False, True, True, True]
+  #+end_src
+  
+  List of course, implements the typeclass ~Functor~
+
+** ~map~ and ~fmap~ have differences
+   Lists isn't the only type that implements ~Functor~, and ~fmap~ can apply a
+   function over any of those functorial structures, while ~map~ not.
+
+  #+begin_src haskell
+    Prelude> map (+1) (Just 1)
+    Couldn't mathc exptected type ´[b]´
+      with actual type ´Maybe a0´
+
+    Prelude> fmap (+1) (Just 1)
+    Just 2
+  #+end_src
+  
+** ~fmap~ specializes to different types:
+   #+begin_src haskell
+-- Functor f =>
+fmap :: (a -> b) -> f a -> f b
+:: (a -> b) -> [ ] a -> [ ] b
+:: (a -> b) -> Maybe a -> Maybe b
+:: (a -> b) -> Either e a -> Either e b
+:: (a -> b) -> (e,) a -> (e,) b
+:: (a -> b) -> Identity a -> Identity b
+:: (a -> b) -> Constant e a -> Constant e b
+   #+end_src
+   
+> The /e/ on Tuple and Either example are ignored by ~fmap~.
+
+* Let's talk about /f/
+  The /f/ in the typeclass definition for ~Functor~ must be the same /f/
+  throughout the entire definitions, and it must refer to a type that implements
+  the typeclass.
+  
+  *Then*, /F/ has the kind ~* -> *~
+ 
+** Shining star exercises 
+   Let's determine the kinds of the next definitions:
+
+   #+begin_src haskell
+    class Sumthin a where
+      s :: a -> a
+      -- :k ?
+
+    class Else where
+      e :: b -> f (g a b c)
+      -- :k ?
+
+    class Biffy where
+      slayer :: e a b -> (a -> c) -> (b -> d) -> e c d
+      -- :k ?
+
+    class Impish v where
+      impossibleKind :: v -> v a
+      -- :k ?
+  
+    class AlsoImp v where
+      nope :: v a -> v
+      -- :k ?
+   #+end_src
+
+** Shining star answers
+   Let's determine the kinds of the next definitions:
+
+   #+begin_src haskell
+    class Sumthin a where
+      s :: a -> a
+      -- :k * -> *
+
+    class Else where
+      e :: b -> f (g a b c)
+      -- :k * -> * -> * -> *
+
+    class Biffy where
+      slayer :: e a b -> (a -> c) -> (b -> d) -> e c d
+      -- :k * -> * -> *
+
+    class Impish v where
+      impossibleKind :: v -> v a
+      -- :k without kind
+  
+    class AlsoImp v where
+      nope :: v a -> v
+      -- :k without kind
+   #+end_src
