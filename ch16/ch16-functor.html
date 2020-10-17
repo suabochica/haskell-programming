@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Functor</title>
+<meta name="author" content="Sergio Benítez"/>
+<meta name="description" content="Lifting is the "cheat mode" of tetris."/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="http://cdn.jsdelivr.net/reveal.js/3.0.0/css/reveal.css"/>
+
+<link rel="stylesheet" href="http://cdn.jsdelivr.net/reveal.js/3.0.0/css/theme/night.css" id="theme"/>
+<link rel="stylesheet" href="http://cdn.jsdelivr.net/reveal.js/3.0.0/lib/css/zenburn.css"/>
+
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'http://cdn.jsdelivr.net/reveal.js/3.0.0/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide">
+<h1 class="title">Functor</h1><h2 class="author">Sergio Benítez</h2><h2 class="date">October 21th, 2020</h2>
+</section>
+
+<section>
+<section id="slide-orgedf1c31" data-background="#292D3E">
+<h2 id="orgedf1c31">Spoiler</h2>
+<p>
+   From Monoid to Monads we will follow the next path: we abstract out a common pattern,
+make certain it follows some laws, give it an awesome name, and wonder how we ever lived
+without it.
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-org77258df">
+<h2 id="org77258df">Outline</h2>
+<p>
+This chapter will include:
+</p>
+<ul>
+<li>what is a functor?</li>
+<li><code>fmaps</code> galore, and not just on list;</li>
+<li>let's talk about <i>f</i></li>
+<li>functor laws;</li>
+<li>the <i>lifting</i> concept;</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org7182672">
+<h2 id="org7182672">What is a functor?</h2>
+<p>
+A functor is a way to apply a function over some structure that we don't want to alter.
+</p>
+
+<p>
+Functor is all about a pattern of mapping over structure, and, we have use this pattern
+before. Remember the <code>map</code> on List, and the <code>fmap</code>.
+</p>
+
+</section>
+<section id="slide-org285fe56">
+<h3 id="org285fe56">Functor is a list</h3>
+
+<div class="figure">
+<p><img src="./assets/02_functor_is_a_list.gif" alt="02_functor_is_a_list.gif" />
+</p>
+</div>
+
+</section>
+<section id="slide-org3e735fb">
+<h3 id="org3e735fb">Functor is a function</h3>
+
+<div class="figure">
+<p><img src="./assets/01_functor_is_a_function.gif" alt="01_functor_is_a_function.gif" />
+</p>
+</div>
+
+</section>
+<section id="slide-orgac0eeea">
+<h3 id="orgac0eeea">Functor is a promise</h3>
+
+<div class="figure">
+<p><img src="./assets/03_functor_is_a_promise.gif" alt="03_functor_is_a_promise.gif" />
+</p>
+</div>
+
+</section>
+<section id="slide-orgbcaa99c">
+<h3 id="orgbcaa99c">Functor is an effect</h3>
+
+<div class="figure">
+<p><img src="./assets/04_functor_is_an_effect.gif" alt="04_functor_is_an_effect.gif" />
+</p>
+</div>
+
+</section>
+<section id="slide-org9ef1059">
+<h3 id="org9ef1059">Haskell Functor typeclass</h3>
+<div class="org-src-container">
+
+<pre><code class="haskell" >class Functor f where
+  fmap :: (a -&gt; b) -&gt; f a -&gt; f b
+</code></pre>
+</div>
+
+<aside class="notes">
+<ol>
+<li>class, the keyword to begin the definition of a typeclass</li>
+<li>Functor, is the name of the class that we are defining</li>
+<li>f, refers to some sort of type. By convetion, f refers to functional structure.</li>
+<li>where, the keyword ends the declaration of the typeclass, and after it the operation are provided</li>
+<li>fmap, the name of an operation</li>
+<li>a -&gt; b, is any function</li>
+<li>f a, is an argument where f is a functor that takes the a type argument.</li>
+<li>f b, the return value.</li>
+
+</ol>
+
+</aside>
+
+</section>
+</section>
+<section>
+<section id="slide-org236aeae">
+<h2 id="org236aeae"><code>fmap</code> galore</h2>
+<p>
+Below list, <code>fmap</code> and <code>map</code> seem to do the same thing:  
+</p>
+
+<div class="org-src-container">
+
+<pre><code class="haskell" >Prelude&gt; map (/x -&gt; x &gt; 3) [1..6]
+[False, False, False, True, True, True]
+
+
+Prelude&gt; fmap (/x -&gt; x &gt; 3) [1..6]
+[False, False, False, True, True, True]
+</code></pre>
+</div>
+
+<p>
+List of course, implements the typeclass <code>Functor</code>
+</p>
+
+</section>
+<section id="slide-orgd09b055">
+<h3 id="orgd09b055"><code>map</code> and <code>fmap</code> have differences</h3>
+<p>
+Lists isn't the only type that implements <code>Functor</code>, and <code>fmap</code> can apply a
+function over any of those functorial structures, while <code>map</code> not.
+</p>
+
+<div class="org-src-container">
+
+<pre><code class="haskell" >Prelude&gt; map (+1) (Just 1)
+Couldn't mathc exptected type ´[b]´
+  with actual type ´Maybe a0´
+
+Prelude&gt; fmap (+1) (Just 1)
+Just 2
+</code></pre>
+</div>
+
+</section>
+<section id="slide-org5d1cd5c">
+<h3 id="org5d1cd5c"><code>fmap</code> specializes to different types:</h3>
+<div class="org-src-container">
+
+<pre><code class="haskell" >-- Functor f =&gt;
+fmap :: (a -&gt; b) -&gt; f a -&gt; f b
+:: (a -&gt; b) -&gt; [ ] a -&gt; [ ] b
+:: (a -&gt; b) -&gt; Maybe a -&gt; Maybe b
+:: (a -&gt; b) -&gt; Either e a -&gt; Either e b
+:: (a -&gt; b) -&gt; (e,) a -&gt; (e,) b
+:: (a -&gt; b) -&gt; Identity a -&gt; Identity b
+:: (a -&gt; b) -&gt; Constant e a -&gt; Constant e b
+</code></pre>
+</div>
+
+<p>
+&gt; The <i>e</i> on Tuple and Either example are ignored by <code>fmap</code>.
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-orgbb8e5ef">
+<h2 id="orgbb8e5ef">Let's talk about <i>f</i></h2>
+<p>
+The <i>f</i> in the typeclass definition for <code>Functor</code> must be the same <i>f</i>
+throughout the entire definitions, and it must refer to a type that implements
+the typeclass.
+</p>
+
+<p>
+<b>Then</b>, <i>F</i> has the kind <code>* -&gt; *</code>
+</p>
+
+</section>
+<section id="slide-org75f37e4">
+<h3 id="org75f37e4">Shining star exercises</h3>
+<p>
+Let's determine the kinds of the next definitions:
+</p>
+
+<div class="org-src-container">
+
+<pre><code class="haskell" >class Sumthin a where
+  s :: a -&gt; a
+  -- :k ?
+
+class Else where
+  e :: b -&gt; f (g a b c)
+  -- :k ?
+
+class Biffy where
+  slayer :: e a b -&gt; (a -&gt; c) -&gt; (b -&gt; d) -&gt; e c d
+  -- :k ?
+
+class Impish v where
+  impossibleKind :: v -&gt; v a
+  -- :k ?
+
+class AlsoImp v where
+  nope :: v a -&gt; v
+  -- :k ?
+</code></pre>
+</div>
+
+</section>
+<section id="slide-org69e222d">
+<h3 id="org69e222d">Shining star answers</h3>
+<p>
+Let's determine the kinds of the next definitions:
+</p>
+
+<div class="org-src-container">
+
+<pre><code class="haskell" >class Sumthin a where
+  s :: a -&gt; a
+  -- :k * -&gt; *
+
+class Else where
+  e :: b -&gt; f (g a b c)
+  -- :k * -&gt; * -&gt; * -&gt; *
+
+class Biffy where
+  slayer :: e a b -&gt; (a -&gt; c) -&gt; (b -&gt; d) -&gt; e c d
+  -- :k * -&gt; * -&gt; *
+
+class Impish v where
+  impossibleKind :: v -&gt; v a
+  -- :k without kind
+
+class AlsoImp v where
+  nope :: v a -&gt; v
+  -- :k without kind
+</code></pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgaa9d7bc">
+<h2 id="orgaa9d7bc">Functor laws</h2>
+<p>
+The <code>map</code> definition must obey the functor laws, and there are two laws:
+</p>
+<ul>
+<li>Identity</li>
+<li>Composition</li>
+<li>Book view: structure preservation</li>
+
+</ul>
+</section>
+<section id="slide-org6685c03">
+<h3 id="org6685c03">Identity</h3>
+
+<div class="figure">
+<p><img src="./assets/05_functor_law_identity.gif" alt="05_functor_law_identity.gif" />
+</p>
+</div>
+
+<div class="org-src-container">
+
+<pre><code class="haskell" >fmap id == id
+</code></pre>
+</div>
+
+</section>
+<section id="slide-org1391a30">
+<h3 id="org1391a30">Composition</h3>
+
+<div class="figure">
+<p><img src="./assets/06_functor_law_composition.gif" alt="06_functor_law_composition.gif" />
+</p>
+</div>
+
+<div class="org-src-container">
+
+<pre><code class="haskell" >fmap (f . g) == fmap f . fmap g
+</code></pre>
+</div>
+
+</section>
+<section id="slide-orgf90f947">
+<h3 id="orgf90f947">Structure preservation</h3>
+<div class="org-src-container">
+
+<pre><code class="haskell" >fmap :: Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+</code></pre>
+</div>
+
+<aside class="notes">
+<p>
+The core operation that this typeclass provides for these types is <code>fmap</code>.
+Because the 𝑓 persists through the type of <code>fmap</code>, whatever the type is,
+we know it must be a type that can take an argument, as in <code>f a</code> and <code>f b</code> and
+that it will be the “structure” we’re lifting the function over when we apply
+it to the value inside.
+</p>
+
+</aside>
+
+</section>
+</section>
+<section>
+<section id="slide-org777701b">
+<h2 id="org777701b">The <i>lifting</i> concept</h2>
+<p>
+The <i>lifting</i> concept in the book is an spatial metaphor, but sometimes this
+metaphor can obscure as much as clarify.
+</p>
+
+<p>
+There are a couple of ways to think about it:
+</p>
+<ol>
+<li>We can <i>lift</i> a function into a context</li>
+<li>We <i>lift</i> a function over some layer of structure to apply it</li>
+
+</ol>
+
+<p>
+In the end the effect is the same.
+</p>
+
+
+</section>
+</section>
+<section>
+<section id="slide-orgf0b3c23">
+<h2 id="orgf0b3c23">References</h2>
+<ul>
+<li><a href="https://medium.com/@lettier/your-easy-guide-to-monads-applicatives-functors-862048d61610">Your easy guide to Monads, Applicatives, and Functors</a></li>
+<li><a href="https://adit.io/posts/2013-04-17-functors,_applicatives,_and_monads_in_pictures.html#functors">Functors, Applicatives, and Monads in Pictures</a></li>
+<li><a href="https://medium.com/@dtinth/what-is-a-functor-dcf510b098b6">What is a functor?</a></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orga4fdd4b">
+<h2 id="orga4fdd4b">Thanks!</h2>
+</section>
+</section>
+</div>
+</div>
+<script src="http://cdn.jsdelivr.net/reveal.js/3.0.0/lib/js/head.min.js"></script>
+<script src="http://cdn.jsdelivr.net/reveal.js/3.0.0/js/reveal.js"></script>
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: false,
+center: true,
+slideNumber: 'c',
+rollingLinks: false,
+keyboard: true,
+mouseWheel: false,
+fragmentInURL: false,
+hashOneBasedIndex: false,
+pdfSeparateFragments: true,
+
+overview: true,
+width: 1200,
+height: 800,
+
+theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+transition: Reveal.getQueryHash().transition || 'zoom', // see README of reveal.js for options
+transitionSpeed: 'default',
+
+// Optional libraries used to extend reveal.js
+dependencies: [
+ { src: 'http://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }]
+
+});
+</script>
+</body>
+</html>

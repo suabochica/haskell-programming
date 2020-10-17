@@ -9,26 +9,43 @@
 #+TITLE: Functor
 #+DESCRIPTION: Lifting is the "cheat mode" of tetris.
 #+AUTHOR: Sergio Benítez
+#+DATE: October 21th, 2020
 
 * Spoiler
+  :PROPERTIES:
+  :reveal_background: #292D3E
+  :END:
+
    From Monoid to Monads we will follow the next path: we abstract out a common pattern,
 make certain it follows some laws, give it an awesome name, and wonder how we ever lived
 without it.
 
 * Outline
   This chapter will include:
-- the return of the higher-kinded types;
-- fmaps galore, and not just on list;
-- no more digression about dusty logicians;
-- words about typeclasses and constructor classes;
-- puns based on George Clinton music, probably.
+- what is a functor?
+- ~fmaps~ galore, and not just on list;
+- let's talk about /f/
+- functor laws;
+- the /lifting/ concept;
 
 * What is a functor?
   A functor is a way to apply a function over some structure that we don't want to alter.
   
 Functor is all about a pattern of mapping over structure, and, we have use this pattern
 before. Remember the ~map~ on List, and the ~fmap~.
- 
+
+** Functor is a list
+   [[./assets/02_functor_is_a_list.gif]]
+   
+** Functor is a function
+   [[./assets/01_functor_is_a_function.gif]]
+     
+** Functor is a promise
+   [[./assets/03_functor_is_a_promise.gif]]
+   
+** Functor is an effect
+   [[./assets/04_functor_is_an_effect.gif]]
+   
 ** Haskell Functor typeclass
 #+begin_src haskell
 class Functor f where
@@ -46,7 +63,7 @@ class Functor f where
 8. f b, the return value.
 #+end_notes
 
-* ~fmap~
+* ~fmap~ galore
   Below list, ~fmap~ and ~map~ seem to do the same thing:  
   
   #+begin_src haskell
@@ -148,9 +165,49 @@ fmap :: (a -> b) -> f a -> f b
   The ~map~ definition must obey the functor laws, and there are two laws:
   - Identity
   - Composition
-  - Structure preservation
+  - Book view: structure preservation
+** Identity
+   [[./assets/05_functor_law_identity.gif]]
+   
+#+begin_src haskell
+fmap id == id
+#+end_src
+
+** Composition
+   [[./assets/06_functor_law_composition.gif]]
+
+#+begin_src haskell
+fmap (f . g) == fmap f . fmap g
+#+end_src
+
+** Structure preservation
+   
+#+begin_src haskell
+fmap :: Functor f => (a -> b) -> f a -> f b
+#+end_src
+
+#+begin_notes
+The core operation that this typeclass provides for these types is ~fmap~.
+Because the 𝑓 persists through the type of ~fmap~, whatever the type is,
+we know it must be a type that can take an argument, as in ~f a~ and ~f b~ and
+that it will be the “structure” we’re lifting the function over when we apply
+it to the value inside.
+#+end_notes
+
+* The /lifting/ concept
+The /lifting/ concept in the book is an spatial metaphor, but sometimes this
+metaphor can obscure as much as clarify.
+
+There are a couple of ways to think about it:
+1. We can /lift/ a function into a context
+2. We /lift/ a function over some layer of structure to apply it
+
+In the end the effect is the same.
+
 
 * References
-  - [Your easy guide to Monads, Applicatives, and Functors](https://medium.com/@lettier/your-easy-guide-to-monads-applicatives-functors-862048d61610)
-  - [Functors, Applicatives, and Monads in Pictures](https://adit.io/posts/2013-04-17-functors,_applicatives,_and_monads_in_pictures.html#functors)
-  - [What is a functor?](https://medium.com/@dtinth/what-is-a-functor-dcf510b098b6)
+  - [[https://medium.com/@lettier/your-easy-guide-to-monads-applicatives-functors-862048d61610][Your easy guide to Monads, Applicatives, and Functors]] 
+  - [[https://adit.io/posts/2013-04-17-functors,_applicatives,_and_monads_in_pictures.html#functors][Functors, Applicatives, and Monads in Pictures]] 
+  - [[https://medium.com/@dtinth/what-is-a-functor-dcf510b098b6][What is a functor?]]
+
+* Thanks!
