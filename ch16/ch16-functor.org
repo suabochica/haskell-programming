@@ -143,3 +143,14 @@ fmap :: (a -> b) -> f a -> f b
       nope :: v a -> v
       -- :k without kind
    #+end_src
+
+* Functor laws
+  The ~map~ definition must obey the functor laws, and there are two laws:
+  - Identity
+  - Composition
+  - Structure preservation
+
+* References
+  - [Your easy guide to Monads, Applicatives, and Functors](https://medium.com/@lettier/your-easy-guide-to-monads-applicatives-functors-862048d61610)
+  - [Functors, Applicatives, and Monads in Pictures](https://adit.io/posts/2013-04-17-functors,_applicatives,_and_monads_in_pictures.html#functors)
+  - [What is a functor?](https://medium.com/@dtinth/what-is-a-functor-dcf510b098b6)
