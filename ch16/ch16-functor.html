@@ -32,8 +32,8 @@
 </section>
 
 <section>
-<section id="slide-orgedf1c31" data-background="#292D3E">
-<h2 id="orgedf1c31">Spoiler</h2>
+<section id="slide-org9b2b0bd" data-background="#292D3E">
+<h2 id="org9b2b0bd">Spoiler</h2>
 <p>
    From Monoid to Monads we will follow the next path: we abstract out a common pattern,
 make certain it follows some laws, give it an awesome name, and wonder how we ever lived
@@ -43,8 +43,20 @@ without it.
 </section>
 </section>
 <section>
-<section id="slide-org77258df">
-<h2 id="org77258df">Outline</h2>
+<section id="slide-org9c8bced" data-background="#292D3E">
+<h2 id="org9c8bced">The statement</h2>
+<p>
+&#x2026;every sufficiently good analogy is yearning to become a functor.
+</p>
+
+<p>
+<i>John Baez</i>
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org0020858">
+<h2 id="org0020858">Outline</h2>
 <p>
 This chapter will include:
 </p>
@@ -60,8 +72,8 @@ This chapter will include:
 </section>
 </section>
 <section>
-<section id="slide-org7182672">
-<h2 id="org7182672">What is a functor?</h2>
+<section id="slide-orgdb96757">
+<h2 id="orgdb96757">What is a functor?</h2>
 <p>
 A functor is a way to apply a function over some structure that we don't want to alter.
 </p>
@@ -72,47 +84,81 @@ before. Remember the <code>map</code> on List, and the <code>fmap</code>.
 </p>
 
 </section>
-<section id="slide-org285fe56">
-<h3 id="org285fe56">Functor is a list</h3>
+<section id="slide-org5a88093">
+<h3 id="org5a88093">Functor is a list</h3>
 
 <div class="figure">
 <p><img src="./assets/02_functor_is_a_list.gif" alt="02_functor_is_a_list.gif" />
 </p>
 </div>
 
+<div class="org-src-container">
+
+<pre><code class=" haskell" >map(function)(list) = [function(element) | element &lt;- list]
+add1(input) = input + 1
+map(add1)([1,2,3])
+-- [2,3,4]
+</code></pre>
+</div>
+
 </section>
-<section id="slide-org3e735fb">
-<h3 id="org3e735fb">Functor is a function</h3>
+<section id="slide-orgaf39d78">
+<h3 id="orgaf39d78">Functor is a function</h3>
 
 <div class="figure">
 <p><img src="./assets/01_functor_is_a_function.gif" alt="01_functor_is_a_function.gif" />
 </p>
 </div>
 
+<div class="org-src-container">
+
+<pre><code class=" haskell" >map(function1)(function2)(input) = function1(function2(input))
+sub2(input) = input - 2
+map(add1)(sub2)(1)
+-- 0
+</code></pre>
+</div>
+
 </section>
-<section id="slide-orgac0eeea">
-<h3 id="orgac0eeea">Functor is a promise</h3>
+<section id="slide-org6909005">
+<h3 id="org6909005">Functor is a promise</h3>
 
 <div class="figure">
 <p><img src="./assets/03_functor_is_a_promise.gif" alt="03_functor_is_a_promise.gif" />
 </p>
 </div>
 
+<div class="org-src-container">
+
+<pre><code class=" haskell" >map(function)(promise) = fmap(function)(promise)
+promise &lt;- async(return 11)
+wait(map(sub2)(promise))
+-- 9
+</code></pre>
+</div>
+
 </section>
-<section id="slide-orgbcaa99c">
-<h3 id="orgbcaa99c">Functor is an effect</h3>
+<section id="slide-orgeb53baf">
+<h3 id="orgeb53baf">Functor is an effect</h3>
 
 <div class="figure">
 <p><img src="./assets/04_functor_is_an_effect.gif" alt="04_functor_is_an_effect.gif" />
 </p>
 </div>
 
+<pre  class="example">
+map
+  ::       (input -&gt; output) -- Takes a function.
+  -&gt; effect(input          ) -- Takes input inside an effect.
+  -&gt; effect(         output) -- Returns output inside an effect.
+</pre>
+
 </section>
-<section id="slide-org9ef1059">
-<h3 id="org9ef1059">Haskell Functor typeclass</h3>
+<section id="slide-orgdd7f219">
+<h3 id="orgdd7f219">Haskell Functor typeclass</h3>
 <div class="org-src-container">
 
-<pre><code class="haskell" >class Functor f where
+<pre><code class=" haskell" >class Functor f where
   fmap :: (a -&gt; b) -&gt; f a -&gt; f b
 </code></pre>
 </div>
@@ -135,15 +181,15 @@ before. Remember the <code>map</code> on List, and the <code>fmap</code>.
 </section>
 </section>
 <section>
-<section id="slide-org236aeae">
-<h2 id="org236aeae"><code>fmap</code> galore</h2>
+<section id="slide-org6642f21">
+<h2 id="org6642f21"><code>fmap</code> galore</h2>
 <p>
 Below list, <code>fmap</code> and <code>map</code> seem to do the same thing:  
 </p>
 
 <div class="org-src-container">
 
-<pre><code class="haskell" >Prelude&gt; map (/x -&gt; x &gt; 3) [1..6]
+<pre><code class=" haskell" >Prelude&gt; map (/x -&gt; x &gt; 3) [1..6]
 [False, False, False, True, True, True]
 
 
@@ -157,8 +203,8 @@ List of course, implements the typeclass <code>Functor</code>
 </p>
 
 </section>
-<section id="slide-orgd09b055">
-<h3 id="orgd09b055"><code>map</code> and <code>fmap</code> have differences</h3>
+<section id="slide-orgd000ecb">
+<h3 id="orgd000ecb"><code>map</code> and <code>fmap</code> have differences</h3>
 <p>
 Lists isn't the only type that implements <code>Functor</code>, and <code>fmap</code> can apply a
 function over any of those functorial structures, while <code>map</code> not.
@@ -166,7 +212,7 @@ function over any of those functorial structures, while <code>map</code> not.
 
 <div class="org-src-container">
 
-<pre><code class="haskell" >Prelude&gt; map (+1) (Just 1)
+<pre><code class=" haskell" >Prelude&gt; map (+1) (Just 1)
 Couldn't mathc exptected type ´[b]´
   with actual type ´Maybe a0´
 
@@ -176,11 +222,11 @@ Just 2
 </div>
 
 </section>
-<section id="slide-org5d1cd5c">
-<h3 id="org5d1cd5c"><code>fmap</code> specializes to different types:</h3>
+<section id="slide-orgb0ede35">
+<h3 id="orgb0ede35"><code>fmap</code> specializes to different types:</h3>
 <div class="org-src-container">
 
-<pre><code class="haskell" >-- Functor f =&gt;
+<pre><code class=" haskell" >-- Functor f =&gt;
 fmap :: (a -&gt; b) -&gt; f a -&gt; f b
 :: (a -&gt; b) -&gt; [ ] a -&gt; [ ] b
 :: (a -&gt; b) -&gt; Maybe a -&gt; Maybe b
@@ -198,8 +244,8 @@ fmap :: (a -&gt; b) -&gt; f a -&gt; f b
 </section>
 </section>
 <section>
-<section id="slide-orgbb8e5ef">
-<h2 id="orgbb8e5ef">Let's talk about <i>f</i></h2>
+<section id="slide-org131e0ff">
+<h2 id="org131e0ff">Let's talk about <i>f</i></h2>
 <p>
 The <i>f</i> in the typeclass definition for <code>Functor</code> must be the same <i>f</i>
 throughout the entire definitions, and it must refer to a type that implements
@@ -211,15 +257,15 @@ the typeclass.
 </p>
 
 </section>
-<section id="slide-org75f37e4">
-<h3 id="org75f37e4">Shining star exercises</h3>
+<section id="slide-org323ba8b">
+<h3 id="org323ba8b">Shining star exercises</h3>
 <p>
 Let's determine the kinds of the next definitions:
 </p>
 
 <div class="org-src-container">
 
-<pre><code class="haskell" >class Sumthin a where
+<pre><code class=" haskell" >class Sumthin a where
   s :: a -&gt; a
   -- :k ?
 
@@ -242,15 +288,15 @@ class AlsoImp v where
 </div>
 
 </section>
-<section id="slide-org69e222d">
-<h3 id="org69e222d">Shining star answers</h3>
+<section id="slide-orgf4784d0">
+<h3 id="orgf4784d0">Shining star answers</h3>
 <p>
 Let's determine the kinds of the next definitions:
 </p>
 
 <div class="org-src-container">
 
-<pre><code class="haskell" >class Sumthin a where
+<pre><code class=" haskell" >class Sumthin a where
   s :: a -&gt; a
   -- :k * -&gt; *
 
@@ -275,8 +321,8 @@ class AlsoImp v where
 </section>
 </section>
 <section>
-<section id="slide-orgaa9d7bc">
-<h2 id="orgaa9d7bc">Functor laws</h2>
+<section id="slide-org0c3a17c">
+<h2 id="org0c3a17c">Functor laws</h2>
 <p>
 The <code>map</code> definition must obey the functor laws, and there are two laws:
 </p>
@@ -287,8 +333,8 @@ The <code>map</code> definition must obey the functor laws, and there are two la
 
 </ul>
 </section>
-<section id="slide-org6685c03">
-<h3 id="org6685c03">Identity</h3>
+<section id="slide-orga31b44b">
+<h3 id="orga31b44b">Identity</h3>
 
 <div class="figure">
 <p><img src="./assets/05_functor_law_identity.gif" alt="05_functor_law_identity.gif" />
@@ -297,13 +343,13 @@ The <code>map</code> definition must obey the functor laws, and there are two la
 
 <div class="org-src-container">
 
-<pre><code class="haskell" >fmap id == id
+<pre><code class=" haskell" >fmap id == id
 </code></pre>
 </div>
 
 </section>
-<section id="slide-org1391a30">
-<h3 id="org1391a30">Composition</h3>
+<section id="slide-orga03782d">
+<h3 id="orga03782d">Composition</h3>
 
 <div class="figure">
 <p><img src="./assets/06_functor_law_composition.gif" alt="06_functor_law_composition.gif" />
@@ -312,16 +358,16 @@ The <code>map</code> definition must obey the functor laws, and there are two la
 
 <div class="org-src-container">
 
-<pre><code class="haskell" >fmap (f . g) == fmap f . fmap g
+<pre><code class=" haskell" >fmap (f . g) == fmap f . fmap g
 </code></pre>
 </div>
 
 </section>
-<section id="slide-orgf90f947">
-<h3 id="orgf90f947">Structure preservation</h3>
+<section id="slide-org4e23290">
+<h3 id="org4e23290">Structure preservation</h3>
 <div class="org-src-container">
 
-<pre><code class="haskell" >fmap :: Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+<pre><code class=" haskell" >fmap :: Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
 </code></pre>
 </div>
 
@@ -339,8 +385,8 @@ it to the value inside.
 </section>
 </section>
 <section>
-<section id="slide-org777701b">
-<h2 id="org777701b">The <i>lifting</i> concept</h2>
+<section id="slide-org5bb64d4">
+<h2 id="org5bb64d4">The <i>lifting</i> concept</h2>
 <p>
 The <i>lifting</i> concept in the book is an spatial metaphor, but sometimes this
 metaphor can obscure as much as clarify.
@@ -356,15 +402,14 @@ There are a couple of ways to think about it:
 </ol>
 
 <p>
-In the end the effect is the same.
+In the end, the effect is the same.
 </p>
-
 
 </section>
 </section>
 <section>
-<section id="slide-orgf0b3c23">
-<h2 id="orgf0b3c23">References</h2>
+<section id="slide-org718561f">
+<h2 id="org718561f">References</h2>
 <ul>
 <li><a href="https://medium.com/@lettier/your-easy-guide-to-monads-applicatives-functors-862048d61610">Your easy guide to Monads, Applicatives, and Functors</a></li>
 <li><a href="https://adit.io/posts/2013-04-17-functors,_applicatives,_and_monads_in_pictures.html#functors">Functors, Applicatives, and Monads in Pictures</a></li>
@@ -375,8 +420,8 @@ In the end the effect is the same.
 </section>
 </section>
 <section>
-<section id="slide-orga4fdd4b">
-<h2 id="orga4fdd4b">Thanks!</h2>
+<section id="slide-org80d7e02" data-background="#292D3E">
+<h2 id="org80d7e02">Thanks!</h2>
 </section>
 </section>
 </div>

@@ -20,6 +20,13 @@
 make certain it follows some laws, give it an awesome name, and wonder how we ever lived
 without it.
 
+* The statement
+  :PROPERTIES:
+  :reveal_background: #292D3E
+  :END:
+...every sufficiently good analogy is yearning to become a functor.
+
+/John Baez/
 * Outline
   This chapter will include:
 - what is a functor?
@@ -37,15 +44,43 @@ before. Remember the ~map~ on List, and the ~fmap~.
 ** Functor is a list
    [[./assets/02_functor_is_a_list.gif]]
    
+#+begin_src haskell
+map(function)(list) = [function(element) | element <- list]
+add1(input) = input + 1
+map(add1)([1,2,3])
+-- [2,3,4]
+#+end_src
+
 ** Functor is a function
    [[./assets/01_functor_is_a_function.gif]]
      
+#+begin_src haskell
+map(function1)(function2)(input) = function1(function2(input))
+sub2(input) = input - 2
+map(add1)(sub2)(1)
+-- 0
+#+end_src
+
 ** Functor is a promise
    [[./assets/03_functor_is_a_promise.gif]]
    
+#+begin_src haskell
+map(function)(promise) = fmap(function)(promise)
+promise <- async(return 11)
+wait(map(sub2)(promise))
+-- 9
+#+end_src
+
 ** Functor is an effect
    [[./assets/04_functor_is_an_effect.gif]]
    
+#+begin_src
+map
+  ::       (input -> output) -- Takes a function.
+  -> effect(input          ) -- Takes input inside an effect.
+  -> effect(         output) -- Returns output inside an effect.
+#+end_src
+
 ** Haskell Functor typeclass
 #+begin_src haskell
 class Functor f where
@@ -202,8 +237,7 @@ There are a couple of ways to think about it:
 1. We can /lift/ a function into a context
 2. We /lift/ a function over some layer of structure to apply it
 
-In the end the effect is the same.
-
+In the end, the effect is the same.
 
 * References
   - [[https://medium.com/@lettier/your-easy-guide-to-monads-applicatives-functors-862048d61610][Your easy guide to Monads, Applicatives, and Functors]] 
@@ -211,3 +245,6 @@ In the end the effect is the same.
   - [[https://medium.com/@dtinth/what-is-a-functor-dcf510b098b6][What is a functor?]]
 
 * Thanks!
+  :PROPERTIES:
+  :reveal_background: #292D3E
+  :END:
