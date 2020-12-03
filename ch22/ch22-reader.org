@@ -1,0 +1,37 @@
+
+#+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/3.0.0/
+#+OPTIONS: toc:nil num:nil timestamp:nil
+#+OPTIONS: reveal_width:1200 reveal_height:800 reveal_progress:t reveal_center:t
+#+REVEAL_TRANS: zoom
+#+REVEAL_THEME: night
+#+REVEAL_INIT_OPTIONS: slideNumber:true
+#+REVEAL_PLUGINS: (highlight)
+
+#+TITLE: Reader
+#+DESCRIPTION: Lifting is the "cheat mode" of tetris.
+#+AUTHOR: Sergio Benítez
+#+DATE: December 11th, 2020
+
+* Note
+  :PROPERTIES:
+  :reveal_background: #292D3E
+  :END:
+
+  Foldable, Traversable, Reader, State, and Parsers are not strictly necessary
+to understanding and using Haskell.
+
+* Outline
+- the ~Reader~ context
+- examine the Functor, Applicative, and Monad instances for /functions/;
+- the ~Reader~ newtype;
+- ~fmaps~ galore, and not just on list;
+- examples using ~Reader~
+
+* Reader context
+  When writing applications, programmers often need to pass around some
+information that may be needed intermittently or universally throughout an
+entire application.
+
+Pass this information as functions arguments is not enough because it would be
+present in the type of almost every function. This will make the code harder to
+read and harder to maintain. To address this, we use the *Reader* Monad.
