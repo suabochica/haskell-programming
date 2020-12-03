@@ -35,3 +35,38 @@ entire application.
 Pass this information as functions arguments is not enough because it would be
 present in the type of almost every function. This will make the code harder to
 read and harder to maintain. To address this, we use the *Reader* Monad.
+
+* A new beginning
+The boop doop example.
+
+** Functorial context
+  
+With “functorial context” we mean the structure that the function is being
+lifted over in order to apply to the value inside. For example, a list is a 
+functorial context we can lift functions over.
+
+We say that the function gets lifted over the structure of the list and applied
+to or mapped over the values that are inside the list.
+
+** Applicative context
+
+We’d use this when two functions would share the same input and we want to apply
+some other function to the result of those to reach a final result
+
+** Monadic context
+
+We assign the variable 𝑎 to the partially-applied function boop, and 𝑏 to doop.
+As soon as we receive an input, it will fill the empty slots in boop and doop.
+The results will be bound to the variables 𝑎 and 𝑏 and passed into return.
+
+** Conclusion
+So, we’ve seen here that we can have a Functor, Applicative, and Monad for
+partially-applied functions. In all cases, these are awaiting application to one
+argument that will allow both functions to be evaluated.
+
+This is the idea of /Reader/. It is a way of stringing functions together when
+all those functions are awaiting one input from a shared environment.
+
+The important intuition here is that it’s just another way of abstracting out
+function application and gives us a way to do computation in terms of an
+argument that hasn’t been supplied yet.
