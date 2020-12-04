@@ -1,3 +1,5 @@
+module BipBoop where
+
 import Control.Applicative
 
 boop = (*2)
@@ -32,8 +34,9 @@ duwop = liftA2 (+) boop doop
 
 -- Monadic context
 boopDoop :: Integer -> Integer boopDoop = do
-a <- boop
-b <- doop return (a + b)
+  a <- boop
+  b <- doop
+  return (a + b)
 
 -- We assign the variable 𝑎 to the partially-applied function boop, and 𝑏 to
 -- doop. As soon as we receive an input, it will fill the empty slots in boop
