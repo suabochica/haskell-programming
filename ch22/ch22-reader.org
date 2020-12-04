@@ -70,3 +70,17 @@ all those functions are awaiting one input from a shared environment.
 The important intuition here is that it’s just another way of abstracting out
 function application and gives us a way to do computation in terms of an
 argument that hasn’t been supplied yet.
+
+* This is Reader
+As we saw above, functions have Functor, Applicative, and Monad
+instances. Usually when you see or hear the term Reader, it’ll be
+referring to the Monad or Applicative instances.
+- Functor of  functions, we map an ordinary function over another to create a 
+new function awaiting a final argument.
+- Applicative and Monad instances for the function type give us a way to map a
+function that is awaiting an /a/ over another function that is also awaiting an
+/a/
+
+Giving it a name help us know that what and why of what we are doing: /reding
+and argument form the environment into functions/. It will be especially nice
+for clarity's sake later whe we make the Reader /monad transformer/ 
