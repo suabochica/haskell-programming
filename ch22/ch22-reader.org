@@ -84,3 +84,77 @@ function that is awaiting an /a/ over another function that is also awaiting an
 Giving it a name help us know that what and why of what we are doing: /reding
 and argument form the environment into functions/. It will be especially nice
 for clarity's sake later whe we make the Reader /monad transformer/ 
+
+* Breaking down the functor of functions
+
+#+begin_src haskell
+-- partially-applied type constructor of functions
+instance Functor ((->) r)
+
+-- implementation of the (->) instance
+instance Functor ((->) r) where
+  fmap = (.)
+#+end_src
+
+** The Either functor
+
+#+begin_notes
+you have to lift over the (->) a and only transform the 𝑏 value.The 𝑎 is
+conventionally called 𝑟 for Reader in these instances, but a type variable of
+any other name smells as sweet. Here, r is the first argument of (a -> b):
+#+end_notes
+
+#+begin_src haskell
+data (->) a b
+
+-- Type constructor of functions
+(->)
+-- Fully applied a -> b
+((->) r) -- is
+r ->
+-- so r is the type of the
+-- argument to the function
+#+end_src
+
+#+begin_notes
+From this, we can determine that 𝑟, the argument type for functions, is part of
+the structure being lifted over when we lift over a function, not the value 
+being transformed or mapped over.
+#+end_notes
+
+This leaves the result of the function as the value being transformed. This
+happens to line up neatly with what function composition is about:
+
+#+begin_src haskell
+(.) :: (b -> c) -> (a -> b) -> a -> c
+-- or perhaps
+(.) :: (b -> c) -> (a -> b) -> (a -> c)
+#+end_src
+
+** Functorial lifting for functions
+
+#+begin_src haskell
+(.)  :: (b -> c) -> (a -> b) -> (a -> c)
+fmap :: Functor f => (a -> b) -> f a -> f b
+-- we're going to remove the names of the functions
+-- and the typeclass constraint as we can take it for
+-- granted from here on out.
+
+:: (b -> c) -> :: (a -> b) -> (a -> c)
+:: (b -> c) -> f b -> f c
+
+-- Changing up the letters without changing the meaning
+:: (b -> c) -> (a -> b) -> (a -> c) 
+:: (b -> c) -> f b-> f c
+
+-- f is ((->) a)
+:: (b -> c) -> (a -> b) -> (a -> c) 
+:: (b -> c) -> ((->) a) b -> ((->) a) c
+
+-- Unroll the prefix notation into infix
+:: (b -> c) -> (a -> b) -> (a -> c)
+:: (b -> c) -> (a -> b) -> (a -> c)
+#+end_src
+
+*  But Reader?
+
