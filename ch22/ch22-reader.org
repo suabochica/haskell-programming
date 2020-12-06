@@ -157,4 +157,50 @@ fmap :: Functor f => (a -> b) -> f a -> f b
 #+end_src
 
 *  But Reader?
+  
+Reader is a newtype wrapper for the function type:
 
+#+begin_src haskell
+newtype Reader r a =
+  Reader { runReader :: r -> a }
+#+end_src
+
+The 𝑟 is the type we’re “reading” in and 𝑎 is the result type of our function.
+
+#+begin_notes
+The Reader newtype has a handy runReader accessor to get the function out of 
+Reader. 
+#+end_notes
+
+#+begin_src haskell
+instance Functor (Reader r) where
+  fmap :: (a -> b) -> Reader r a -> Reader r b
+  fmap f (Reader ra) =
+    Reader $ (f . ra)
+#+end_src
+
+So what we’re doing here is basically:
+1. Unpack r -> a out of Reader
+2. Compose 𝑓 with the function we unpacked out of Reader.
+3. Put the new function made from the composition back into Reader.
+
+*  The Applicative of functions
+
+#+begin_src haskell
+-- Applicative f =>
+-- f ~ (->) r
+pure :: a -> f a
+pure :: a -> (r -> a)
+
+(<*>) :: f (a -> b) -> f a -> f b
+(<*>) :: (r -> a -> b) -> (r -> a) -> (r -> b)
+#+end_src
+
+#+begin_notes
+As we saw in the Functor instance, the 𝑟 of Reader is part of the 𝑓 structure.
+We have two arguments in this function, and both of them are functions waiting
+for the 𝑟 input. When that comes, both functions will be applied to return a 
+final result of 𝑏.
+#+end_notes
+
+*  The Monad of functions
