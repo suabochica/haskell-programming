@@ -84,7 +84,6 @@ function that is awaiting an /a/ over another function that is also awaiting an
 Giving it a name help us know that what and why of what we are doing: /reding
 and argument form the environment into functions/. It will be especially nice
 for clarity's sake later whe we make the Reader /monad transformer/ 
-
 * Breaking down the functor of functions
 
 #+begin_src haskell
@@ -204,3 +203,43 @@ final result of 𝑏.
 #+end_notes
 
 *  The Monad of functions
+
+#+begin_src haskell
+(>>=) :: Monad m => m a -> (a -> (m b)) -> m b
+               (r -> a) -> (a -> (r -> b)) -> (r -> b)
+#+end_src
+
+This is how we get to the Monad of functions. Just as with the
+Functor and Applicative instances, the ((->) r) is our structure 
+the 𝑚 in the type of (>>=). In the next section, we’ll work forward
+from the types.
+
+
+** Reader Monad by itself is kinda boring
+
+Speaking generally in terms of the algebras alone, you cannot get
+a Monad instance from the Applicative. You can get an Applicative
+from the Monad.
+
+** You can change what comes below, but not above
+
+The “read-only” nature of the type argument 𝑟 means that you can
+swap in a different type or value of 𝑟 for functions that you call, but
+not for functions that call you.
+ 
+#+begin_src haskell
+withReaderT
+  :: (r' -> r)
+  -- ^ The function to modify the environment.
+  -> ReaderT r m a
+  -- ^ Computation to run in the modified environment.
+  -> ReaderT r' m a
+  withReaderT f m = ReaderT $ runReaderT m . f
+#+end_src
+
+** You tend to see ReaderT, no Reader
+
+When used in that fashion, it’s a monad transformer and we
+put a letter T after the type to indicate when we’re using it as such,
+so you’ll usually see ReaderT in production Haskell code rather than
+Reader.

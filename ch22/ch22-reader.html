@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Reader</title>
+<meta name="author" content="Sergio Benítez"/>
+<meta name="description" content="Lifting is the "cheat mode" of tetris."/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="http://cdn.jsdelivr.net/reveal.js/3.0.0/css/reveal.css"/>
+
+<link rel="stylesheet" href="http://cdn.jsdelivr.net/reveal.js/3.0.0/css/theme/night.css" id="theme"/>
+<link rel="stylesheet" href="http://cdn.jsdelivr.net/reveal.js/3.0.0/lib/css/zenburn.css"/>
+
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'http://cdn.jsdelivr.net/reveal.js/3.0.0/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide">
+<h1 class="title">Reader</h1><h2 class="author">Sergio Benítez</h2><h2 class="date">December 11th, 2020</h2>
+</section>
+
+<section>
+<section id="slide-org8e0e3c8" data-background="#292D3E">
+<h2 id="org8e0e3c8">Note</h2>
+<p>
+  Foldable, Traversable, Reader, State, and Parsers are not strictly necessary
+to understanding and using Haskell.
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-org9057912">
+<h2 id="org9057912">Outline</h2>
+<ul>
+<li>the <code>Reader</code> context</li>
+<li>examine the Functor, Applicative, and Monad instances for <i>functions</i>;</li>
+<li>the <code>Reader</code> newtype;</li>
+<li><code>fmaps</code> galore, and not just on list;</li>
+<li>examples using <code>Reader</code></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org1b1ede2">
+<h2 id="org1b1ede2">Reader context</h2>
+<p>
+  When writing applications, programmers often need to pass around some
+information that may be needed intermittently or universally throughout an
+entire application.
+</p>
+
+<p>
+Pass this information as functions arguments is not enough because it would be
+present in the type of almost every function. This will make the code harder to
+read and harder to maintain. To address this, we use the <b>Reader</b> Monad.
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-org03308c3">
+<h2 id="org03308c3">A new beginning</h2>
+<p>
+The boop doop example.
+</p>
+
+</section>
+<section id="slide-org8a9f38f">
+<h3 id="org8a9f38f">Functorial context</h3>
+<p>
+With “functorial context” we mean the structure that the function is being
+lifted over in order to apply to the value inside. For example, a list is a 
+functorial context we can lift functions over.
+</p>
+
+<p>
+We say that the function gets lifted over the structure of the list and applied
+to or mapped over the values that are inside the list.
+</p>
+
+</section>
+<section id="slide-org3323466">
+<h3 id="org3323466">Applicative context</h3>
+<p>
+We’d use this when two functions would share the same input and we want to apply
+some other function to the result of those to reach a final result
+</p>
+
+</section>
+<section id="slide-org6dd172f">
+<h3 id="org6dd172f">Monadic context</h3>
+<p>
+We assign the variable 𝑎 to the partially-applied function boop, and 𝑏 to doop.
+As soon as we receive an input, it will fill the empty slots in boop and doop.
+The results will be bound to the variables 𝑎 and 𝑏 and passed into return.
+</p>
+
+</section>
+<section id="slide-org471dad4">
+<h3 id="org471dad4">Conclusion</h3>
+<p>
+So, we’ve seen here that we can have a Functor, Applicative, and Monad for
+partially-applied functions. In all cases, these are awaiting application to one
+argument that will allow both functions to be evaluated.
+</p>
+
+<p>
+This is the idea of <i>Reader</i>. It is a way of stringing functions together when
+all those functions are awaiting one input from a shared environment.
+</p>
+
+<p>
+The important intuition here is that it’s just another way of abstracting out
+function application and gives us a way to do computation in terms of an
+argument that hasn’t been supplied yet.
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-org1bf05c4">
+<h2 id="org1bf05c4">This is Reader</h2>
+<p>
+As we saw above, functions have Functor, Applicative, and Monad
+instances. Usually when you see or hear the term Reader, it’ll be
+referring to the Monad or Applicative instances.
+</p>
+<ul>
+<li>Functor of  functions, we map an ordinary function over another to create a</li>
+
+</ul>
+<p>
+new function awaiting a final argument.
+</p>
+<ul>
+<li>Applicative and Monad instances for the function type give us a way to map a</li>
+
+</ul>
+<p>
+function that is awaiting an <i>a</i> over another function that is also awaiting an
+<i>a</i>
+</p>
+
+<p>
+Giving it a name help us know that what and why of what we are doing: <i>reding
+and argument form the environment into functions</i>. It will be especially nice
+for clarity's sake later whe we make the Reader <i>monad transformer</i> 
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org59f55ef">
+<h2 id="org59f55ef">Breaking down the functor of functions</h2>
+<div class="org-src-container">
+
+<pre><code class=" haskell" >-- partially-applied type constructor of functions
+instance Functor ((-&gt;) r)
+
+-- implementation of the (-&gt;) instance
+instance Functor ((-&gt;) r) where
+  fmap = (.)
+</code></pre>
+</div>
+
+</section>
+<section id="slide-org0dfa7e6">
+<h3 id="org0dfa7e6">The Either functor</h3>
+<aside class="notes">
+<p>
+you have to lift over the (-&gt;) a and only transform the 𝑏 value.The 𝑎 is
+conventionally called 𝑟 for Reader in these instances, but a type variable of
+any other name smells as sweet. Here, r is the first argument of (a -&gt; b):
+</p>
+
+</aside>
+
+<div class="org-src-container">
+
+<pre><code class=" haskell" >data (-&gt;) a b
+
+-- Type constructor of functions
+(-&gt;)
+-- Fully applied a -&gt; b
+((-&gt;) r) -- is
+r -&gt;
+-- so r is the type of the
+-- argument to the function
+</code></pre>
+</div>
+
+<aside class="notes">
+<p>
+From this, we can determine that 𝑟, the argument type for functions, is part of
+the structure being lifted over when we lift over a function, not the value 
+being transformed or mapped over.
+</p>
+
+</aside>
+
+<p>
+This leaves the result of the function as the value being transformed. This
+happens to line up neatly with what function composition is about:
+</p>
+
+<div class="org-src-container">
+
+<pre><code class=" haskell" >(.) :: (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+-- or perhaps
+(.) :: (b -&gt; c) -&gt; (a -&gt; b) -&gt; (a -&gt; c)
+</code></pre>
+</div>
+
+</section>
+<section id="slide-org00a4c88">
+<h3 id="org00a4c88">Functorial lifting for functions</h3>
+<div class="org-src-container">
+
+<pre><code class=" haskell" >(.)  :: (b -&gt; c) -&gt; (a -&gt; b) -&gt; (a -&gt; c)
+fmap :: Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+-- we're going to remove the names of the functions
+-- and the typeclass constraint as we can take it for
+-- granted from here on out.
+
+:: (b -&gt; c) -&gt; :: (a -&gt; b) -&gt; (a -&gt; c)
+:: (b -&gt; c) -&gt; f b -&gt; f c
+
+-- Changing up the letters without changing the meaning
+:: (b -&gt; c) -&gt; (a -&gt; b) -&gt; (a -&gt; c) 
+:: (b -&gt; c) -&gt; f b-&gt; f c
+
+-- f is ((-&gt;) a)
+:: (b -&gt; c) -&gt; (a -&gt; b) -&gt; (a -&gt; c) 
+:: (b -&gt; c) -&gt; ((-&gt;) a) b -&gt; ((-&gt;) a) c
+
+-- Unroll the prefix notation into infix
+:: (b -&gt; c) -&gt; (a -&gt; b) -&gt; (a -&gt; c)
+:: (b -&gt; c) -&gt; (a -&gt; b) -&gt; (a -&gt; c)
+</code></pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orga0d533c">
+<h2 id="orga0d533c">But Reader?</h2>
+<p>
+Reader is a newtype wrapper for the function type:
+</p>
+
+<div class="org-src-container">
+
+<pre><code class=" haskell" >newtype Reader r a =
+  Reader { runReader :: r -&gt; a }
+</code></pre>
+</div>
+
+<p>
+The 𝑟 is the type we’re “reading” in and 𝑎 is the result type of our function.
+</p>
+
+<aside class="notes">
+<p>
+The Reader newtype has a handy runReader accessor to get the function out of 
+Reader. 
+</p>
+
+</aside>
+
+<div class="org-src-container">
+
+<pre><code class=" haskell" >instance Functor (Reader r) where
+  fmap :: (a -&gt; b) -&gt; Reader r a -&gt; Reader r b
+  fmap f (Reader ra) =
+    Reader $ (f . ra)
+</code></pre>
+</div>
+
+<p>
+So what we’re doing here is basically:
+</p>
+<ol>
+<li>Unpack r -&gt; a out of Reader</li>
+<li>Compose 𝑓 with the function we unpacked out of Reader.</li>
+<li>Put the new function made from the composition back into Reader.</li>
+
+</ol>
+
+</section>
+</section>
+<section>
+<section id="slide-org7a207f3">
+<h2 id="org7a207f3">The Applicative of functions</h2>
+<div class="org-src-container">
+
+<pre><code class=" haskell" >-- Applicative f =&gt;
+-- f ~ (-&gt;) r
+pure :: a -&gt; f a
+pure :: a -&gt; (r -&gt; a)
+
+(&lt;*&gt;) :: f (a -&gt; b) -&gt; f a -&gt; f b
+(&lt;*&gt;) :: (r -&gt; a -&gt; b) -&gt; (r -&gt; a) -&gt; (r -&gt; b)
+</code></pre>
+</div>
+
+<aside class="notes">
+<p>
+As we saw in the Functor instance, the 𝑟 of Reader is part of the 𝑓 structure.
+We have two arguments in this function, and both of them are functions waiting
+for the 𝑟 input. When that comes, both functions will be applied to return a 
+final result of 𝑏.
+</p>
+
+</aside>
+
+</section>
+</section>
+<section>
+<section id="slide-orgf70b0db">
+<h2 id="orgf70b0db">The Monad of functions</h2>
+<div class="org-src-container">
+
+<pre><code class=" haskell" >(&gt;&gt;=) :: Monad m =&gt; m a -&gt; (a -&gt; (m b)) -&gt; m b
+               (r -&gt; a) -&gt; (a -&gt; (r -&gt; b)) -&gt; (r -&gt; b)
+</code></pre>
+</div>
+
+<p>
+This is how we get to the Monad of functions. Just as with the
+Functor and Applicative instances, the ((-&gt;) r) is our structure 
+the 𝑚 in the type of (&gt;&gt;=). In the next section, we’ll work forward
+from the types.
+</p>
+
+
+</section>
+<section id="slide-org440b296">
+<h3 id="org440b296">Reader Monad by itself is kinda boring</h3>
+<p>
+Speaking generally in terms of the algebras alone, you cannot get
+a Monad instance from the Applicative. You can get an Applicative
+from the Monad.
+</p>
+
+</section>
+<section id="slide-org7b1b75b">
+<h3 id="org7b1b75b">You can change what comes below, but not above</h3>
+<p>
+The “read-only” nature of the type argument 𝑟 means that you can
+swap in a different type or value of 𝑟 for functions that you call, but
+not for functions that call you.
+</p>
+
+<div class="org-src-container">
+
+<pre><code class=" haskell" >withReaderT
+  :: (r' -&gt; r)
+  -- ^ The function to modify the environment.
+  -&gt; ReaderT r m a
+  -- ^ Computation to run in the modified environment.
+  -&gt; ReaderT r' m a
+  withReaderT f m = ReaderT $ runReaderT m . f
+</code></pre>
+</div>
+
+</section>
+<section id="slide-org92439e3">
+<h3 id="org92439e3">You tend to see ReaderT, no Reader</h3>
+<p>
+When used in that fashion, it’s a monad transformer and we
+put a letter T after the type to indicate when we’re using it as such,
+so you’ll usually see ReaderT in production Haskell code rather than
+Reader.
+</p>
+</section>
+</section>
+</div>
+</div>
+<script src="http://cdn.jsdelivr.net/reveal.js/3.0.0/lib/js/head.min.js"></script>
+<script src="http://cdn.jsdelivr.net/reveal.js/3.0.0/js/reveal.js"></script>
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: false,
+center: true,
+slideNumber: 'c',
+rollingLinks: false,
+keyboard: true,
+mouseWheel: false,
+fragmentInURL: false,
+hashOneBasedIndex: false,
+pdfSeparateFragments: true,
+
+overview: true,
+width: 1200,
+height: 800,
+
+theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+transition: Reveal.getQueryHash().transition || 'zoom', // see README of reveal.js for options
+transitionSpeed: 'default',
+
+// Optional libraries used to extend reveal.js
+dependencies: [
+ { src: 'http://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }]
+
+});
+</script>
+</body>
+</html>
