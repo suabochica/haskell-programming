@@ -24,7 +24,6 @@ to understanding and using Haskell.
 - the ~Reader~ context
 - examine the Functor, Applicative, and Monad instances for /functions/;
 - the ~Reader~ newtype;
-- ~fmaps~ galore, and not just on list;
 - examples using ~Reader~
 
 * Reader context
@@ -39,27 +38,72 @@ read and harder to maintain. To address this, we use the *Reader* Monad.
 * A new beginning
 The boop doop example.
 
+#+begin_src haskell
+boop :: Integer -> Integer
+boop = (*2)
+
+
+doop :: Integer -> Integer
+doop = (+10)
+
+bip :: Integer -> Integer
+bip = boop . doop
+#+end_src
+
 ** Functorial context
-  
+
+#+begin_notes
 With “functorial context” we mean the structure that the function is being
 lifted over in order to apply to the value inside. For example, a list is a 
 functorial context we can lift functions over.
 
 We say that the function gets lifted over the structure of the list and applied
 to or mapped over the values that are inside the list.
+#+end_notes
+
+#+begin_src haskell
+-- Functorial context
+-- We can write it like
+
+bloop :: Integer -> Integer
+bloop = fmap boop doop
+#+end_src
 
 ** Applicative context
 
+#+begin_notes
 We’d use this when two functions would share the same input and we want to apply
 some other function to the result of those to reach a final result
+#+end_notes
+
+#+begin_src haskell
+-- Applicative context
+bbop :: Integer -> Integer
+bbop = (+) <$> boop <*> doop
+
+duwop :: Integer -> Integer
+duwop = liftA2 (+) boop doop
+#+end_src
 
 ** Monadic context
 
+#+begin_notes
 We assign the variable 𝑎 to the partially-applied function boop, and 𝑏 to doop.
 As soon as we receive an input, it will fill the empty slots in boop and doop.
 The results will be bound to the variables 𝑎 and 𝑏 and passed into return.
+#+end_notes
+
+#+begin_src haskell
+-- Monadic context
+boopDoop :: Integer -> Integer
+boopDoop = do
+  a <- boop
+  b <- doop
+  return (a + b)
+#+end_src
 
 ** Conclusion
+#+begin_notes
 So, we’ve seen here that we can have a Functor, Applicative, and Monad for
 partially-applied functions. In all cases, these are awaiting application to one
 argument that will allow both functions to be evaluated.
@@ -70,6 +114,9 @@ all those functions are awaiting one input from a shared environment.
 The important intuition here is that it’s just another way of abstracting out
 function application and gives us a way to do computation in terms of an
 argument that hasn’t been supplied yet.
+#+end_notes
+
+[[./assets/summary.gif]]
 
 * This is Reader
 As we saw above, functions have Functor, Applicative, and Monad
@@ -155,7 +202,7 @@ fmap :: Functor f => (a -> b) -> f a -> f b
 :: (b -> c) -> (a -> b) -> (a -> c)
 #+end_src
 
-*  But Reader?
+* But Reader?
   
 Reader is a newtype wrapper for the function type:
 
@@ -183,7 +230,7 @@ So what we’re doing here is basically:
 2. Compose 𝑓 with the function we unpacked out of Reader.
 3. Put the new function made from the composition back into Reader.
 
-*  The Applicative of functions
+* The Applicative of functions
 
 #+begin_src haskell
 -- Applicative f =>
@@ -202,7 +249,7 @@ for the 𝑟 input. When that comes, both functions will be applied to return a
 final result of 𝑏.
 #+end_notes
 
-*  The Monad of functions
+* The Monad of functions
 
 #+begin_src haskell
 (>>=) :: Monad m => m a -> (a -> (m b)) -> m b

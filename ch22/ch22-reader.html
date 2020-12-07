@@ -32,8 +32,8 @@
 </section>
 
 <section>
-<section id="slide-org8e0e3c8" data-background="#292D3E">
-<h2 id="org8e0e3c8">Note</h2>
+<section id="slide-orgd812455" data-background="#292D3E">
+<h2 id="orgd812455">Note</h2>
 <p>
   Foldable, Traversable, Reader, State, and Parsers are not strictly necessary
 to understanding and using Haskell.
@@ -42,13 +42,12 @@ to understanding and using Haskell.
 </section>
 </section>
 <section>
-<section id="slide-org9057912">
-<h2 id="org9057912">Outline</h2>
+<section id="slide-orgcb82596">
+<h2 id="orgcb82596">Outline</h2>
 <ul>
 <li>the <code>Reader</code> context</li>
 <li>examine the Functor, Applicative, and Monad instances for <i>functions</i>;</li>
 <li>the <code>Reader</code> newtype;</li>
-<li><code>fmaps</code> galore, and not just on list;</li>
 <li>examples using <code>Reader</code></li>
 
 </ul>
@@ -56,8 +55,8 @@ to understanding and using Haskell.
 </section>
 </section>
 <section>
-<section id="slide-org1b1ede2">
-<h2 id="org1b1ede2">Reader context</h2>
+<section id="slide-orge6277a6">
+<h2 id="orge6277a6">Reader context</h2>
 <p>
   When writing applications, programmers often need to pass around some
 information that may be needed intermittently or universally throughout an
@@ -73,15 +72,30 @@ read and harder to maintain. To address this, we use the <b>Reader</b> Monad.
 </section>
 </section>
 <section>
-<section id="slide-org03308c3">
-<h2 id="org03308c3">A new beginning</h2>
+<section id="slide-org2ccc925">
+<h2 id="org2ccc925">A new beginning</h2>
 <p>
 The boop doop example.
 </p>
 
+<div class="org-src-container">
+
+<pre><code class=" haskell" >boop :: Integer -&gt; Integer
+boop = (*2)
+
+
+doop :: Integer -&gt; Integer
+doop = (+10)
+
+bip :: Integer -&gt; Integer
+bip = boop . doop
+</code></pre>
+</div>
+
 </section>
-<section id="slide-org8a9f38f">
-<h3 id="org8a9f38f">Functorial context</h3>
+<section id="slide-org794592d">
+<h3 id="org794592d">Functorial context</h3>
+<aside class="notes">
 <p>
 With “functorial context” we mean the structure that the function is being
 lifted over in order to apply to the value inside. For example, a list is a 
@@ -93,26 +107,67 @@ We say that the function gets lifted over the structure of the list and applied
 to or mapped over the values that are inside the list.
 </p>
 
+</aside>
+
+<div class="org-src-container">
+
+<pre><code class=" haskell" >-- Functorial context
+-- We can write it like
+
+bloop :: Integer -&gt; Integer
+bloop = fmap boop doop
+</code></pre>
+</div>
+
 </section>
-<section id="slide-org3323466">
-<h3 id="org3323466">Applicative context</h3>
+<section id="slide-orgeff3745">
+<h3 id="orgeff3745">Applicative context</h3>
+<aside class="notes">
 <p>
 We’d use this when two functions would share the same input and we want to apply
 some other function to the result of those to reach a final result
 </p>
 
+</aside>
+
+<div class="org-src-container">
+
+<pre><code class=" haskell" >-- Applicative context
+bbop :: Integer -&gt; Integer
+bbop = (+) &lt;$&gt; boop &lt;*&gt; doop
+
+duwop :: Integer -&gt; Integer
+duwop = liftA2 (+) boop doop
+</code></pre>
+</div>
+
 </section>
-<section id="slide-org6dd172f">
-<h3 id="org6dd172f">Monadic context</h3>
+<section id="slide-org5edd763">
+<h3 id="org5edd763">Monadic context</h3>
+<aside class="notes">
 <p>
 We assign the variable 𝑎 to the partially-applied function boop, and 𝑏 to doop.
 As soon as we receive an input, it will fill the empty slots in boop and doop.
 The results will be bound to the variables 𝑎 and 𝑏 and passed into return.
 </p>
 
+</aside>
+
+<div class="org-src-container">
+
+<pre><code class=" haskell" >-- Monadic context
+boopDoop :: Integer -&gt; Integer
+boopDoop = do
+  a &lt;- boop
+  b &lt;- doop
+  return (a + b)
+</code></pre>
+</div>
+
 </section>
-<section id="slide-org471dad4">
-<h3 id="org471dad4">Conclusion</h3>
+<section id="slide-org0efec6d">
+<h3 id="org0efec6d">Conclusion</h3>
+<aside class="notes">
 <p>
 So, we’ve seen here that we can have a Functor, Applicative, and Monad for
 partially-applied functions. In all cases, these are awaiting application to one
@@ -130,11 +185,19 @@ function application and gives us a way to do computation in terms of an
 argument that hasn’t been supplied yet.
 </p>
 
+</aside>
+
+
+<div class="figure">
+<p><img src="./assets/summary.gif" alt="summary.gif" />
+</p>
+</div>
+
 </section>
 </section>
 <section>
-<section id="slide-org1bf05c4">
-<h2 id="org1bf05c4">This is Reader</h2>
+<section id="slide-orgdf4f2bf">
+<h2 id="orgdf4f2bf">This is Reader</h2>
 <p>
 As we saw above, functions have Functor, Applicative, and Monad
 instances. Usually when you see or hear the term Reader, it’ll be
@@ -164,8 +227,8 @@ for clarity's sake later whe we make the Reader <i>monad transformer</i>
 </section>
 </section>
 <section>
-<section id="slide-org59f55ef">
-<h2 id="org59f55ef">Breaking down the functor of functions</h2>
+<section id="slide-orgba7bec6">
+<h2 id="orgba7bec6">Breaking down the functor of functions</h2>
 <div class="org-src-container">
 
 <pre><code class=" haskell" >-- partially-applied type constructor of functions
@@ -178,8 +241,8 @@ instance Functor ((-&gt;) r) where
 </div>
 
 </section>
-<section id="slide-org0dfa7e6">
-<h3 id="org0dfa7e6">The Either functor</h3>
+<section id="slide-org13faaf9">
+<h3 id="org13faaf9">The Either functor</h3>
 <aside class="notes">
 <p>
 you have to lift over the (-&gt;) a and only transform the 𝑏 value.The 𝑎 is
@@ -226,8 +289,8 @@ happens to line up neatly with what function composition is about:
 </div>
 
 </section>
-<section id="slide-org00a4c88">
-<h3 id="org00a4c88">Functorial lifting for functions</h3>
+<section id="slide-org4361371">
+<h3 id="org4361371">Functorial lifting for functions</h3>
 <div class="org-src-container">
 
 <pre><code class=" haskell" >(.)  :: (b -&gt; c) -&gt; (a -&gt; b) -&gt; (a -&gt; c)
@@ -256,8 +319,8 @@ fmap :: Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
 </section>
 </section>
 <section>
-<section id="slide-orga0d533c">
-<h2 id="orga0d533c">But Reader?</h2>
+<section id="slide-org9f208c2">
+<h2 id="org9f208c2">But Reader?</h2>
 <p>
 Reader is a newtype wrapper for the function type:
 </p>
@@ -303,8 +366,8 @@ So what we’re doing here is basically:
 </section>
 </section>
 <section>
-<section id="slide-org7a207f3">
-<h2 id="org7a207f3">The Applicative of functions</h2>
+<section id="slide-orgd9fc82b">
+<h2 id="orgd9fc82b">The Applicative of functions</h2>
 <div class="org-src-container">
 
 <pre><code class=" haskell" >-- Applicative f =&gt;
@@ -330,8 +393,8 @@ final result of 𝑏.
 </section>
 </section>
 <section>
-<section id="slide-orgf70b0db">
-<h2 id="orgf70b0db">The Monad of functions</h2>
+<section id="slide-orgc475da3">
+<h2 id="orgc475da3">The Monad of functions</h2>
 <div class="org-src-container">
 
 <pre><code class=" haskell" >(&gt;&gt;=) :: Monad m =&gt; m a -&gt; (a -&gt; (m b)) -&gt; m b
@@ -348,8 +411,8 @@ from the types.
 
 
 </section>
-<section id="slide-org440b296">
-<h3 id="org440b296">Reader Monad by itself is kinda boring</h3>
+<section id="slide-orga3ff738">
+<h3 id="orga3ff738">Reader Monad by itself is kinda boring</h3>
 <p>
 Speaking generally in terms of the algebras alone, you cannot get
 a Monad instance from the Applicative. You can get an Applicative
@@ -357,8 +420,8 @@ from the Monad.
 </p>
 
 </section>
-<section id="slide-org7b1b75b">
-<h3 id="org7b1b75b">You can change what comes below, but not above</h3>
+<section id="slide-orgd26e149">
+<h3 id="orgd26e149">You can change what comes below, but not above</h3>
 <p>
 The “read-only” nature of the type argument 𝑟 means that you can
 swap in a different type or value of 𝑟 for functions that you call, but
@@ -378,8 +441,8 @@ not for functions that call you.
 </div>
 
 </section>
-<section id="slide-org92439e3">
-<h3 id="org92439e3">You tend to see ReaderT, no Reader</h3>
+<section id="slide-orgf39163d">
+<h3 id="orgf39163d">You tend to see ReaderT, no Reader</h3>
 <p>
 When used in that fashion, it’s a monad transformer and we
 put a letter T after the type to indicate when we’re using it as such,

@@ -2,7 +2,11 @@ module BipBoop where
 
 import Control.Applicative
 
+boop :: Integer -> Integer
 boop = (*2)
+
+
+doop :: Integer -> Integer
 doop = (+10)
 
 bip :: Integer -> Integer
@@ -17,7 +21,7 @@ bloop = fmap boop doop
 -- As in function composition, fmap composes the two functions before applying
 -- them to the argument.
 
-fmap boop doop x == (*2) ((+10) x)
+-- fmap boop doop x == (*2) ((+10) x)
 -- when this x comes along, it's the
 -- first necessary argument to (+10)
 -- then the result for that is the
@@ -30,10 +34,11 @@ bbop = (+) <$> boop <*> doop
 duwop :: Integer -> Integer
 duwop = liftA2 (+) boop doop
 
--- Arguments are passed in parallel, and results will be added togehter
+-- Arguments are passed in parallel, and results will be added together
 
 -- Monadic context
-boopDoop :: Integer -> Integer boopDoop = do
+boopDoop :: Integer -> Integer
+boopDoop = do
   a <- boop
   b <- doop
   return (a + b)
