@@ -13,11 +13,11 @@ z = [7, 8, 9]
 xs :: Maybe Integer
 xs = lookup 3 $ zip x y
 
--- zip x and y using 3 as the lookup key
+-- zip x and y using 6 as the lookup key
 ys :: Maybe Integer
 ys = lookup 6 $ zip z y
 
---zip x and y using 3 as the lookup key
+-- zip x and y using 3 as the lookup key
 zs :: Maybe Integer
 zs = lookup 4 $ zip x y
 
