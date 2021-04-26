@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Recursion and Pattern Matching</title>
+<meta name="author" content="Sergio Benítez"/>
+<meta name="description" content="Lifting is the "cheat mode" of tetris."/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="http://cdn.jsdelivr.net/reveal.js/3.0.0/css/reveal.css"/>
+
+<link rel="stylesheet" href="http://cdn.jsdelivr.net/reveal.js/3.0.0/css/theme/night.css" id="theme"/>
+<link rel="stylesheet" href="http://cdn.jsdelivr.net/reveal.js/3.0.0/lib/css/zenburn.css"/>
+
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'http://cdn.jsdelivr.net/reveal.js/3.0.0/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide">
+<h1 class="title">Recursion and Pattern Matching</h1><h2 class="author">Sergio Benítez</h2><h2 class="date">April 27th, 2021</h2>
+</section>
+
+
+<section>
+<section id="slide-org3173537" data-background="#FF2768">
+<h2 id="org3173537">Outline</h2>
+<ul>
+<li>Recursion</li>
+<li>Recursion in practice</li>
+<li>Another way to look at recursion</li>
+<li>Enum</li>
+<li>Pattern matching</li>
+<li>Pattern matching in practice</li>
+<li>Both concepts applied</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgc2232a9" data-background="#4E1A3D">
+<h2 id="orgc2232a9">Recursion</h2>
+<p>
+<i>def:</i> Recursion is defining a function in term of itself via self-referential expressions
+</p>
+
+<aside class="notes">
+<p>
+It means that the function will continue to call itself and repeat its behavior until some condition is met to return a result.
+</p>
+
+</aside>
+
+</section>
+<section id="slide-org241c9ec">
+<h3 id="org241c9ec">😕</h3>
+
+
+</section>
+<section id="slide-orgdbaaebc">
+<h3 id="orgdbaaebc">Better definition</h3>
+<p>
+Recursion is a means of expressing code that must take an <i>indefinite</i> number of steps to return a result
+</p>
+
+
+</section>
+</section>
+<section>
+<section id="slide-orgd4b219a" data-background="#4E1A3D">
+<h2 id="orgd4b219a">Recursion in practice</h2>
+<p>
+One of the classic introductory functions for demonstrating recursion
+in functional languages is factorial. In arithmetic, you might have
+seen expressions like <code>4!</code>. The <i>bang</i> you’re seeing next to the number
+4 is the notation for the factorial function.
+</p>
+
+</section>
+<section id="slide-org462f71e">
+<h3 id="org462f71e">Factorial</h3>
+<div class="org-src-container">
+
+<pre><code class="haskell" >4! = 4 * 3 * 2 * 1
+        12 * 2 * 1
+            24 * 1
+                24
+</code></pre>
+</div>
+
+</section>
+<section id="slide-org451e133">
+<h3 id="org451e133">Four Factorial</h3>
+<div class="org-src-container">
+
+<pre><code class="haskell" >fourFactorial :: Integer
+fourFactorial = 4 * 3 * 2 * 1
+</code></pre>
+</div>
+
+<p>
+We get the correct result, but it only covers one possible result for <code>factorial</code>
+</p>
+
+</section>
+<section id="slide-orgb82a0cf">
+<h3 id="orgb82a0cf">Introducing the base case</h3>
+<div class="org-src-container">
+
+<pre><code class="haskell" >-- This won't work. It never stops
+brokenFact1 :: Integer -&gt; Integer
+brokenFact1 n = n * brokenFact1 (n - 1)
+
+-- Let's apply this to 4
+brokenFact1 4 = 4 * (4 - 1)
+                  * ((4 - 1) - 1)
+                  * (((4 - 1) - 1) -)
+... this series never stops
+</code></pre>
+</div>
+
+<p>
+The way we can stop a recursive expression is by having a base case
+that stops the self-application to further arguments.
+</p>
+
+</section>
+<section id="slide-orgbbc6b55">
+<h3 id="orgbbc6b55">Factorial with base case</h3>
+<p>
+The base case is: <code>0 = 1</code>   
+</p>
+
+<div class="org-src-container">
+
+<pre><code class="haskell" >-- This won't work. It never stops
+factorial :: Integer -&gt; Integer
+factorial 0 = 1
+factorial n = n *  factorial (n - 1)
+</code></pre>
+</div>
+
+</section>
+<section id="slide-org51832c2">
+<h3 id="org51832c2">Factorial in Action</h3>
+<div class="org-src-container">
+
+<pre><code class="haskell" >factorial 4 = 4 * factorial (4 - 1)
+                -- evaluate (-) applied to 4 and 1
+              4 * factorial 3
+              -- evaluate factorial applied to 3
+              -- expands to 3 * factorial (3 - 1)
+              4 * 3 * factorial (3 - 1)
+              -- beta reduce (-) applied to 3 and 1
+              4 * 3 * factorial 2
+              -- evaluate factorial applied to 2
+              4 * 3 * 2 * factorial (2 - 1)
+              -- evaluate (-) applied to 2 and 1
+              4 * 3 * 2 * factorial 1
+              -- evaluate factorial applied to 1
+              4 * 3 * 2 * 1 * factorial (1 - 1)
+              -- evaluate (-) applied to 1 and 1
+              -- we know factorial 0 = 1
+              -- so we evaluate that to 1
+              4 * 3 * 2 * 1 * 1
+              -- And when we evaluate our multiplications
+              24
+</code></pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org3129841" data-background="#4E1A3D">
+<h2 id="org3129841">Another way to look at recursion</h2>
+<p>
+Recursion is self-referential composition. We apply a function to an argument, then pass that result on as an argument to the second application of the same function and so on.
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-orgc8f464d" data-background="#4E1A3D">
+<h2 id="orgc8f464d">Enums</h2>
+<p>
+Enums allow you to define a type enumerating its possible variants. Enum can encode meaning along with data. Also they offer an variant to express that a value can be either something or nothing
+</p>
+
+</section>
+<section id="slide-orgd9368a7">
+<h3 id="orgd9368a7">Enum situation</h3>
+<p>
+Say we need to work with IP addresses. Currently, two major standards are used for IP addresses:
+</p>
+<ul>
+<li>version four</li>
+<li>version six</li>
+
+</ul>
+<p>
+There are the only possibilities for and IP address that our program will com across: we can <i>enumerate</i> all possible variants, whichs is where enumeration gets its name.
+</p>
+
+</section>
+<section id="slide-org19b0d6f">
+<h3 id="org19b0d6f">Enum IpAddrKind</h3>
+<div class="org-src-container">
+
+<pre><code class="rust" >// We define IpAddrKind as a custom data type
+enum IpAddrKind {
+  V4,
+  V6,
+}
+// We can create instance of each fo the two variants of IpAddrKind
+let four = IpAddrKind::V4;
+let six = IpAddrKind::V6;
+// We define a function that takes any IpAddrKind
+fn route(ip_kind: IpAddrKind) {}
+
+// We call this function with either variant
+route(IpAddrKind::V4);
+route(IpAddrKind::V6);
+</code></pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org486cd65" data-background="#4E1A3D">
+<h2 id="org486cd65">Pattern matching</h2>
+<p>
+Pattern matching is an integral and ubiquitous feature in programming. So integral and ubiquitous that we probably have been used it without be aware of.
+</p>
+
+</section>
+<section id="slide-orgba561a6">
+<h3 id="orgba561a6">Pattern matching definition</h3>
+<p>
+<i>def:</i> Pattern matching is a way of matching values against patterns and where appropirate, binding variables to succesfull matches.
+</p>
+
+<p>
+The patterns can include things as diverse as undefined variables, numeric literals, list syntax and many other stuff
+</p>
+
+</section>
+<section id="slide-org31d1699">
+<h3 id="org31d1699">Pattern matching analogy</h3>
+<p>
+Think of a match expression as being like a coin-sorting machine: coins slide down a track with variously sized holes along it, and each coin fall through the first hole it ecounters that it fits into.
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-org0cb4d64" data-background="#4E1A3D">
+<h2 id="org0cb4d64">Pattern matching in practice</h2>
+<p>
+Pattern matching allows you to expose data and dispatch different behaviors based on that data in your function definitions by deconstructing values to expose their inner workings
+</p>
+
+</section>
+<section id="slide-org5f3aa36">
+<h3 id="org5f3aa36">Pattern matching situation</h3>
+<p>
+We will write a function that can take an unknow United States coin and, in a similar way as the counting machine, determine which coin it is and return its value in cents
+</p>
+
+</section>
+<section id="slide-orgd160dff">
+<h3 id="orgd160dff">Pattern matching coin value to cents</h3>
+<div class="org-src-container">
+
+<pre><code class="rust" >// We define Coin as a custom data type
+enum Coin {
+  Penny,
+  Nickel,
+  Dime,
+  Quarter,
+}
+
+fn value_in_cents(coin: Coin) -&gt; u8 {
+  match coin {
+    Coin::Penny =&gt; 1,
+    Coin::Nickel =&gt; 5,
+    Coin::Dime =&gt; 10,
+    Coin::Quarter =&gt; 25,
+  }
+}
+</code></pre>
+</div>
+
+<aside class="notes">
+<p>
+Let’s break down the match in the value<sub>in</sub><sub>cents</sub> function. First, we list the match keyword followed by an expression, which in this case is the value coin. This seems very similar to an expression used with if, but there’s a big difference: with if, the expression needs to return a Boolean value, but here, it can be any type. The type of coin in this example is the Coin enum that we defined on line 1.
+</p>
+
+<p>
+Next are the match arms. An arm has two parts: a pattern and some code. The first arm here has a pattern that is the value Coin::Penny and then the =&gt; operator that separates the pattern and the code to run. The code in this case is just the value 1. Each arm is separated from the next with a comma.
+</p>
+
+<p>
+When the match expression executes, it compares the resulting value against the pattern of each arm, in order. If a pattern matches the value, the code associated with that pattern is executed. If that pattern doesn’t match the value, execution continues to the next arm, much as in a coin-sorting machine. We can have as many arms as we need: in Listing 6-3, our match has four arms.+begin<sub>notes</sub>
+</p>
+
+</aside>
+
+</section>
+</section>
+<section>
+<section id="slide-org96db704" data-background="#4E1A3D">
+<h2 id="org96db704">Both concepts applied</h2>
+<p>
+<a href="https://youtu.be/SOqQVoVai6s?t=207">Factorial program in Erlang explained via pattern matching</a>
+</p>
+
+<p>
+<video controls width="400" height="300" src="https://youtu.be/SOqQVoVai6s?t=207"></video>
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-orgeff7af3">
+<h2 id="orgeff7af3">References</h2>
+<ul>
+<li>Haskell programming book, ch7 and ch8</li>
+<li>Rust book, ch6</li>
+<li>Computherphile</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org0ab8aab">
+<h2 id="org0ab8aab">🙇🏽</h2>
+</section>
+</section>
+</div>
+</div>
+<script src="http://cdn.jsdelivr.net/reveal.js/3.0.0/lib/js/head.min.js"></script>
+<script src="http://cdn.jsdelivr.net/reveal.js/3.0.0/js/reveal.js"></script>
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: false,
+center: true,
+slideNumber: 'c',
+rollingLinks: false,
+keyboard: true,
+mouseWheel: false,
+fragmentInURL: false,
+hashOneBasedIndex: false,
+pdfSeparateFragments: true,
+
+overview: true,
+width: 1200,
+height: 800,
+
+theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+transition: Reveal.getQueryHash().transition || 'zoom', // see README of reveal.js for options
+transitionSpeed: 'default',
+
+// Optional libraries used to extend reveal.js
+dependencies: [
+ { src: 'http://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }]
+
+});
+</script>
+</body>
+</html>

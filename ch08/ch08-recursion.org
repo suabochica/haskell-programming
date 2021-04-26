@@ -1,0 +1,234 @@
+#+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/3.0.0/
+#+OPTIONS: toc:nil num:nil timestamp:nil
+#+OPTIONS: reveal_width:1200 reveal_height:800 reveal_progress:t reveal_center:t
+#+REVEAL_TRANS: zoom
+#+REVEAL_THEME: night
+#+REVEAL_INIT_OPTIONS: slideNumber:true
+#+REVEAL_PLUGINS: (highlight)
+
+#+TITLE: Recursion and Pattern Matching
+#+DESCRIPTION: Lifting is the "cheat mode" of tetris.
+#+AUTHOR: Sergio Benítez
+#+DATE: April 27th, 2021
+
+
+* Outline
+  :PROPERTIES:
+  :reveal_background: #FF2768
+  :END:
+  
+- Recursion
+- Recursion in practice
+- Another way to look at recursion
+- Enum
+- Pattern matching
+- Pattern matching in practice
+- Both concepts applied
+
+* Recursion
+  :PROPERTIES:
+  :reveal_background: #4E1A3D
+  :END:
+
+/def:/ Recursion is defining a function in term of itself via self-referential expressions
+
+#+begin_notes
+It means that the function will continue to call itself and repeat its behavior until some condition is met to return a result.
+#+end_notes
+
+** 😕
+
+
+** Better definition
+
+Recursion is a means of expressing code that must take an /indefinite/ number of steps to return a result
+
+
+* Recursion in practice
+  :PROPERTIES:
+  :reveal_background: #4E1A3D
+  :END:
+
+One of the classic introductory functions for demonstrating recursion
+in functional languages is factorial. In arithmetic, you might have
+seen expressions like ~4!~. The /bang/ you’re seeing next to the number
+4 is the notation for the factorial function.
+
+** Factorial
+
+#+begin_src haskell
+4! = 4 * 3 * 2 * 1
+        12 * 2 * 1
+            24 * 1
+                24
+#+end_src
+
+** Four Factorial
+
+#+begin_src haskell
+fourFactorial :: Integer
+fourFactorial = 4 * 3 * 2 * 1
+#+end_src
+
+We get the correct result, but it only covers one possible result for ~factorial~
+
+** Introducing the base case
+
+#+begin_src haskell
+-- This won't work. It never stops
+brokenFact1 :: Integer -> Integer
+brokenFact1 n = n * brokenFact1 (n - 1)
+
+-- Let's apply this to 4
+brokenFact1 4 = 4 * (4 - 1)
+                  * ((4 - 1) - 1)
+                  * (((4 - 1) - 1) -)
+... this series never stops
+#+end_src
+
+The way we can stop a recursive expression is by having a base case
+that stops the self-application to further arguments.
+
+** Factorial with base case
+The base case is: ~0 = 1~   
+
+#+begin_src haskell
+-- This won't work. It never stops
+factorial :: Integer -> Integer
+factorial 0 = 1
+factorial n = n *  factorial (n - 1)
+#+end_src
+
+** Factorial in Action
+   
+#+begin_src haskell
+factorial 4 = 4 * factorial (4 - 1)
+                -- evaluate (-) applied to 4 and 1
+              4 * factorial 3
+              -- evaluate factorial applied to 3
+              -- expands to 3 * factorial (3 - 1)
+              4 * 3 * factorial (3 - 1)
+              -- beta reduce (-) applied to 3 and 1
+              4 * 3 * factorial 2
+              -- evaluate factorial applied to 2
+              4 * 3 * 2 * factorial (2 - 1)
+              -- evaluate (-) applied to 2 and 1
+              4 * 3 * 2 * factorial 1
+              -- evaluate factorial applied to 1
+              4 * 3 * 2 * 1 * factorial (1 - 1)
+              -- evaluate (-) applied to 1 and 1
+              -- we know factorial 0 = 1
+              -- so we evaluate that to 1
+              4 * 3 * 2 * 1 * 1
+              -- And when we evaluate our multiplications
+              24
+#+end_src
+
+* Another way to look at recursion
+  :PROPERTIES:
+  :reveal_background: #4E1A3D
+  :END:
+Recursion is self-referential composition. We apply a function to an argument, then pass that result on as an argument to the second application of the same function and so on.
+
+* Enums
+  :PROPERTIES:
+  :reveal_background: #4E1A3D
+  :END:
+
+Enums allow you to define a type enumerating its possible variants. Enum can encode meaning along with data. Also they offer an variant to express that a value can be either something or nothing
+  
+** Enum situation
+
+Say we need to work with IP addresses. Currently, two major standards are used for IP addresses:
+   - version four
+   - version six
+There are the only possibilities for and IP address that our program will com across: we can /enumerate/ all possible variants, whichs is where enumeration gets its name.
+
+** Enum IpAddrKind
+
+#+begin_src rust
+// We define IpAddrKind as a custom data type
+enum IpAddrKind {
+  V4,
+  V6,
+}
+// We can create instance of each fo the two variants of IpAddrKind
+let four = IpAddrKind::V4;
+let six = IpAddrKind::V6;
+// We define a function that takes any IpAddrKind
+fn route(ip_kind: IpAddrKind) {}
+
+// We call this function with either variant
+route(IpAddrKind::V4);
+route(IpAddrKind::V6);
+#+end_src
+
+* Pattern matching
+  :PROPERTIES:
+  :reveal_background: #4E1A3D
+  :END:
+
+Pattern matching is an integral and ubiquitous feature in programming. So integral and ubiquitous that we probably have been used it without be aware of.
+
+** Pattern matching definition
+/def:/ Pattern matching is a way of matching values against patterns and where appropirate, binding variables to succesfull matches.
+
+The patterns can include things as diverse as undefined variables, numeric literals, list syntax and many other stuff
+
+** Pattern matching analogy
+Think of a match expression as being like a coin-sorting machine: coins slide down a track with variously sized holes along it, and each coin fall through the first hole it ecounters that it fits into.
+
+* Pattern matching in practice
+  :PROPERTIES:
+  :reveal_background: #4E1A3D
+  :END:
+
+Pattern matching allows you to expose data and dispatch different behaviors based on that data in your function definitions by deconstructing values to expose their inner workings
+
+** Pattern matching situation
+We will write a function that can take an unknow United States coin and, in a similar way as the counting machine, determine which coin it is and return its value in cents
+
+** Pattern matching coin value to cents
+#+begin_src rust
+// We define Coin as a custom data type
+enum Coin {
+  Penny,
+  Nickel,
+  Dime,
+  Quarter,
+}
+
+fn value_in_cents(coin: Coin) -> u8 {
+  match coin {
+    Coin::Penny => 1,
+    Coin::Nickel => 5,
+    Coin::Dime => 10,
+    Coin::Quarter => 25,
+  }
+}
+#+end_src
+
+#+begin_notes
+Let’s break down the match in the value_in_cents function. First, we list the match keyword followed by an expression, which in this case is the value coin. This seems very similar to an expression used with if, but there’s a big difference: with if, the expression needs to return a Boolean value, but here, it can be any type. The type of coin in this example is the Coin enum that we defined on line 1.
+
+Next are the match arms. An arm has two parts: a pattern and some code. The first arm here has a pattern that is the value Coin::Penny and then the => operator that separates the pattern and the code to run. The code in this case is just the value 1. Each arm is separated from the next with a comma.
+
+When the match expression executes, it compares the resulting value against the pattern of each arm, in order. If a pattern matches the value, the code associated with that pattern is executed. If that pattern doesn’t match the value, execution continues to the next arm, much as in a coin-sorting machine. We can have as many arms as we need: in Listing 6-3, our match has four arms.+begin_notes
+#+end_notes
+
+* Both concepts applied
+  :PROPERTIES:
+  :reveal_background: #4E1A3D
+  :END:
+
+[[https://youtu.be/SOqQVoVai6s?t=207][Factorial program in Erlang explained via pattern matching]]
+
+@@html:<video controls width="400" height="300" src="https://youtu.be/SOqQVoVai6s?t=207"></video>@@
+
+* References
+
+- Haskell programming book, ch7 and ch8
+- Rust book, ch6
+- Computherphile
+  
+* 🙇🏽

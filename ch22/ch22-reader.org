@@ -1,4 +1,3 @@
-
 #+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/3.0.0/
 #+OPTIONS: toc:nil num:nil timestamp:nil
 #+OPTIONS: reveal_width:1200 reveal_height:800 reveal_progress:t reveal_center:t
